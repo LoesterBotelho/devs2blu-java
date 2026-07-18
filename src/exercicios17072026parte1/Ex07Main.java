@@ -1,26 +1,31 @@
-package exercicios17072026;
+package exercicios17072026parte1;
 
 import java.util.Scanner;
 
-public class Ex05Main {
+public class Ex07Main {
 
 	public static void main(String[] args) {
 		getAuthor();
 		
 		Scanner sc = new Scanner(System.in);
 		
-		Ex05 ex05 = new Ex05();
+		Ex07 ex07 = new Ex07();
 		
-		System.out.println("Digite quantidade de minutos em consumo : ");
+		System.out.println("Digite o seu nome : ");
+		String entradaString = sc.nextLine();	
+		
+		ex07.setNome(entradaString);
+		
+		System.out.println("Digite sua idade : ");
 		int entrada = sc.nextInt();		
 		
-		ex05.setTotalMinutos(entrada);
+		ex07.setIdade(entrada);
 		
-		System.out.println("Preco total a pagar : " + ex05.getPrecoTotal());
+		System.out.println("Você : " + ex07.getNome() + " viveu " + ex07.getDiasVivo() );
 		
-		System.out.println(ex05.toString());
+		System.out.println(ex07.toString());
 		
-		sc.close();
+		sc.close();		
 	}
 	
 	public static void getAuthor() {

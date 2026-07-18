@@ -1,4 +1,4 @@
-package exercicios17072026;
+package exercicios17072026parte1;
 
 import java.util.Scanner;
 
@@ -21,6 +21,8 @@ public class Ex08Main {
 		System.out.println(ex08.getMinutos() + " minuto(s).");
 		System.out.println(ex08.getSegundos() + " segundo(s).");
 
+		System.out.println(ex08.toString());
+		
 		sc.close();
 	}
 

@@ -1,29 +1,26 @@
-package exercicios17072026;
+package exercicios17072026parte1;
 
 import java.util.Scanner;
 
-public class Ex07Main {
+public class Ex06Main {
 
 	public static void main(String[] args) {
 		getAuthor();
 		
 		Scanner sc = new Scanner(System.in);
 		
-		Ex07 ex07 = new Ex07();
+		Ex06 ex06 = new Ex06();
 		
-		System.out.println("Digite o seu nome : ");
-		String entradaString = sc.nextLine();	
-		
-		ex07.setNome(entradaString);
-		
-		System.out.println("Digite sua idade : ");
+		System.out.println("Digite a quantidade de paginas : ");
 		int entrada = sc.nextInt();		
 		
-		ex07.setIdade(entrada);
+		ex06.setQuantidadePaginas(entrada);
 		
-		System.out.println("Você : " + ex07.getNome() + " viveu " + ex07.getDiasVivo() );
+		System.out.println("Preco total a pagar : " + ex06.getPreco());
 		
-		sc.close();		
+		System.out.println(ex06.toString());
+		
+		sc.close();
 	}
 	
 	public static void getAuthor() {

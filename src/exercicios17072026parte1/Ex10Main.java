@@ -1,4 +1,4 @@
-package exercicios17072026;
+package exercicios17072026parte1;
 
 import java.util.Scanner;
 
@@ -20,9 +20,10 @@ public class Ex10Main {
 		System.out.printf("Salário-base: R$ %.2f%n", ex10.getSalarioBase());
 		System.out.printf("Gratificação (5%%): R$ %.2f%n", ex10.getGratificacao());
 		System.out.printf("Imposto (7%%): R$ %.2f%n", ex10.getImposto());
-		System.out.printf("Salário a receber: R$ %.2f%n",
-				ex10.getSalarioReceber());
+		System.out.printf("Salário a receber: R$ %.2f%n", ex10.getSalarioReceber());
 
+		System.out.println(ex10.toString());
+		
 		sc.close();
 	}
 

@@ -1,24 +1,24 @@
-package exercicios17072026;
+package exercicios17072026parte1;
 
 import java.util.Scanner;
 
-public class Ex06Main {
+public class Ex05Main {
 
 	public static void main(String[] args) {
 		getAuthor();
 		
 		Scanner sc = new Scanner(System.in);
 		
-		Ex06 ex06 = new Ex06();
+		Ex05 ex05 = new Ex05();
 		
-		System.out.println("Digite a quantidade de paginas : ");
+		System.out.println("Digite quantidade de minutos em consumo : ");
 		int entrada = sc.nextInt();		
 		
-		ex06.setQuantidadePaginas(entrada);
+		ex05.setTotalMinutos(entrada);
 		
-		System.out.println("Preco total a pagar : " + ex06.getPreco());
+		System.out.println("Preco total a pagar : " + ex05.getPrecoTotal());
 		
-		System.out.println(ex06.toString());
+		System.out.println(ex05.toString());
 		
 		sc.close();
 	}

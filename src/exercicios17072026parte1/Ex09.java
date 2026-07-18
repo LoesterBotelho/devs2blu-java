@@ -1,9 +1,16 @@
-package exercicios17072026;
+package exercicios17072026parte1;
 
 public class Ex09 {
 
 	private double valorProduto = 0;
 	private double valorComDesconto = 0;
+
+	public Ex09() { }
+
+	public Ex09(double valorProduto) {		
+		this.valorProduto = valorProduto;
+		this.getValorComDesconto();
+	}
 
 	public double getValorProduto() {
 		return valorProduto;
@@ -20,8 +27,7 @@ public class Ex09 {
 
 	@Override
 	public String toString() {
-		return "Ex09 [valorProduto=" + valorProduto + ", valorComDesconto="
-				+ valorComDesconto + "]";
+		return "Ex09 [valorProduto=" + valorProduto + ", valorComDesconto=" + valorComDesconto + "]";
 	}
 
 }

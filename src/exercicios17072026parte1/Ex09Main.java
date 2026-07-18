@@ -1,4 +1,4 @@
-package exercicios17072026;
+package exercicios17072026parte1;
 
 import java.util.Scanner;
 
@@ -18,9 +18,10 @@ public class Ex09Main {
 		ex09.setValorProduto(entrada);
 
 		System.out.printf("Valor original: R$ %.2f%n", ex09.getValorProduto());
-		System.out.printf("Valor com 9%% de desconto: R$ %.2f%n",
-				ex09.getValorComDesconto());
+		System.out.printf("Valor com 9%% de desconto: R$ %.2f%n", ex09.getValorComDesconto());
 
+		System.out.println(ex09.toString());
+		
 		sc.close();
 	}
 

@@ -1,4 +1,4 @@
-package exercicios17072026;
+package exercicios17072026parte1;
 
 public class Ex05 {
 
@@ -6,7 +6,14 @@ public class Ex05 {
 	private static final double PRECO_MINUTO = 0.0383;
 	private int totalMinutos = 0;
 	private double precoTotal = 0;
-	
+
+	public Ex05() { }
+
+	public Ex05(int totalMinutos) {
+		this.totalMinutos = totalMinutos;
+		this.getPrecoTotal();
+	}
+
 	public double getPrecoTotal() {
 		
 		int horas = (this.totalMinutos / 60);
@@ -16,12 +23,21 @@ public class Ex05 {
 
 		return this.precoTotal;
 	}
+	
 	public void setTotalMinutos(int totalMinutos) {
 		this.totalMinutos = totalMinutos;
 	}
+	
+	
+	public int getTotalMinutos() {
+		return totalMinutos;
+	}
+
 	@Override
 	public String toString() {
-		return "Ex05 [totalMinutos=" + totalMinutos + ", precoTotal=" + precoTotal + "]";
+		return "Ex05 [totalMinutos=" + this.getTotalMinutos() + 
+				", precoTotal=" + this.getPrecoTotal() + 
+				"]";
 	} 
 
 	

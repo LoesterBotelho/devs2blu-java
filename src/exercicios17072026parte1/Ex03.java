@@ -1,4 +1,4 @@
-package exercicios17072026;
+package exercicios17072026parte1;
 
 public class Ex03 {
 
@@ -6,7 +6,16 @@ public class Ex03 {
 	private double valor02 = 0.0;
 	private double soma = 0.0;
 	private double dobro = 0.0;
-	
+
+	public Ex03() { }
+
+	public Ex03(double valor01, double valor02) {
+		this.valor01 = valor01;
+		this.valor02 = valor02;
+		this.getSoma();
+		this.getDobro();
+	}
+
 	public double getValor01() {
 		return valor01;
 	}
@@ -35,7 +44,11 @@ public class Ex03 {
 	
 	@Override
 	public String toString() {
-		return "Ex03 [valor01=" + valor01 + ", valor02=" + valor02 + ", soma=" + soma + ", dobro=" + dobro + "]";
+		return "Ex03 [valor01=" + this.getValor01() + 
+				", valor02=" + this.getValor02() + 
+				", soma=" + this.getSoma() + 
+				", dobro=" + this.getDobro() + 
+				"]";
 	}
 	
 }

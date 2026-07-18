@@ -1,10 +1,17 @@
-package exercicios17072026;
+package exercicios17072026parte1;
 
 public class Ex01 {
 
 	private static final double REAJUSTE = 0.01; // CONSTANTE
 	private double saldo = 0.0;
 	
+	public Ex01() { }
+	
+	public Ex01(double saldo) {
+		this.saldo = saldo;
+		this.getValorReajustado();
+	}
+
 	public double getSaldo() {
 		return saldo;
 	}
@@ -20,7 +27,9 @@ public class Ex01 {
 
 	@Override
 	public String toString() {
-		return "Ex01 [saldo=" + saldo + "," + " ValorReajustado=" + this.getValorReajustado() + "]";
+		return "Ex01 [saldo=" + this.getSaldo() + 
+				"," + " ValorReajustado=" + this.getValorReajustado() + 
+				"]";
 	}
 			
 	

@@ -1,4 +1,4 @@
-package exercicios17072026;
+package exercicios17072026parte1;
 
 public class Ex10 {
 
@@ -6,6 +6,18 @@ public class Ex10 {
 	private double gratificacao = 0;
 	private double imposto = 0;
 	private double salarioReceber = 0;
+
+	
+	
+	
+	public Ex10() { }
+
+	public Ex10(double salarioBase) {
+		this.salarioBase = salarioBase;
+		this.getSalarioReceber();
+	}
+
+
 
 	public double getSalarioBase() {
 		return salarioBase;
@@ -32,9 +44,11 @@ public class Ex10 {
 
 	@Override
 	public String toString() {
-		return "Ex10 [salarioBase=" + salarioBase + ", gratificacao="
-				+ gratificacao + ", imposto=" + imposto
-				+ ", salarioReceber=" + salarioReceber + "]";
+		return "Ex10 [salarioBase=" + this.getSalarioBase() + 
+				", gratificacao=" + this.getGratificacao() + 
+				", imposto=" + this.getImposto() + 
+				", salarioReceber=" + this.getSalarioReceber() +
+				"]";
 	}
 
 }

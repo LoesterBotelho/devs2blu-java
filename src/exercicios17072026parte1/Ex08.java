@@ -1,10 +1,18 @@
-package exercicios17072026;
+package exercicios17072026parte1;
 
 public class Ex08 {
 
 	private int horas = 0;
 	private int minutos = 0;
 	private int segundos = 0;
+
+	public Ex08() { }
+
+	public Ex08(int horas) {
+		this.horas = horas;
+		this.getMinutos();
+		this.getSegundos();
+	}
 
 	public int getHoras() {
 		return horas;
@@ -26,7 +34,10 @@ public class Ex08 {
 
 	@Override
 	public String toString() {
-		return "Ex08 [horas=" + horas + ", minutos=" + minutos + ", segundos=" + segundos + "]";
+		return "Ex08 [horas=" + this.getHoras() + 
+				", minutos=" + this.getMinutos() + 
+				", segundos=" + this.getSegundos() + 
+				"]";
 	}
 
 }

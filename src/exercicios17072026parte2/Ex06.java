@@ -3,17 +3,11 @@ package exercicios17072026parte2;
 public class Ex06 {
 
 	private double metrosQuadradosM2 = 0.0;
-	private double acres = 0.0;
-	private double pesQuadradosFT2 = 0.0;
-	private double hectares = 0.0;
 
 	public Ex06() { }
 
 	public Ex06(double metrosQuadradosM2) {	
 		this.metrosQuadradosM2 = metrosQuadradosM2;
-		getAcres();
-		getPesQuadradosFT2();
-		getHectares();
 	}
 
 	public double getMetrosQuadradosM2() {
@@ -25,26 +19,23 @@ public class Ex06 {
 	}
 	
 	public double getAcres() {
-		this.acres = metrosQuadradosM2 / 4046.86;
-		return this.acres;
+		return metrosQuadradosM2 / 4046.86;
 	}
 	
-	public double getPesQuadradosFT2() {
-		this.pesQuadradosFT2 = metrosQuadradosM2 * 10.7639; // (43560.0 / 4046.86) = 10.7639
-		return this.pesQuadradosFT2;
+	public double getPesQuadradosFT2() {		
+		return metrosQuadradosM2 * 10.7639; // (43560.0 / 4046.86) = 10.7639
 	}
 	
 	public double getHectares() {
-		this.hectares = metrosQuadradosM2 / 10000.0;
-		return this.hectares;
+		return metrosQuadradosM2 / 10000.0;
 	}
 
 	@Override
 	public String toString() {
-		return "Ex06 [metrosQuadradosM2=" + metrosQuadradosM2 + 
-				", acres=" + acres + 
-				", pesQuadradosFT2=" + pesQuadradosFT2 + 
-				", hectares=" + hectares + 
+		return "Ex06 [metrosQuadradosM2=" + this.getMetrosQuadradosM2() + 
+				", acres=" + this.getAcres() + 
+				", pesQuadradosFT2=" + this.getPesQuadradosFT2() + 
+				", hectares=" + this.getHectares() + 
 				"]";
 	}
 

@@ -1,7 +1,9 @@
-package exercicios20072026parte1.oo.aula1.ex03.implementation;
+package exercicios20072026parte1.oo.aula1.ex03;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import exercicios20072026parte1.oo.aula1.ex03.implementation.Veiculo;
 
 public class Frota {
 

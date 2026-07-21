@@ -1,5 +1,10 @@
-package exercicios20072026parte1.oo.aula1.ex03.implementation;
+package exercicios20072026parte1.oo.aula1.ex03;
 
+import exercicios20072026parte1.oo.aula1.ex03.implementation.Caminhao;
+import exercicios20072026parte1.oo.aula1.ex03.implementation.Carro;
+import exercicios20072026parte1.oo.aula1.ex03.implementation.Moto;
+import exercicios20072026parte1.oo.aula1.ex03.implementation.Tesla;
+import exercicios20072026parte1.oo.aula1.ex03.implementation.Veiculo;
 import exercicios20072026parte1.oo.aula1.ex03.interfaces.Abastecivel;
 import exercicios20072026parte1.oo.aula1.ex03.interfaces.Eletrico;
 

@@ -9,7 +9,6 @@ public class Ex01 {
 	
 	public Ex01(double saldo) {
 		this.saldo = saldo;
-		this.getValorReajustado();
 	}
 
 	public double getSaldo() {
@@ -22,7 +21,7 @@ public class Ex01 {
 	}
 
 	public double getValorReajustado() {
-		return saldo * REAJUSTE;
+		return this.saldo * REAJUSTE;
 	}
 
 	@Override

@@ -7,22 +7,13 @@ public class Ex03 {
     private int quantidadeAcoes = 0;
     private double precoCompra = 0.0;
     private double precoVenda = 0.0;
-    private double valorCompra = 0.0;
-    private double valorVenda = 0.0;
-    private double valorCorretagemCompra = 0.0;
-    private double valorCorretagemVenda = 0.0;
-    private double lucroPrejuizo = 0.0;
     
-
 	public Ex03() { }
 
 	public Ex03(int quantidadeAcoes, double precoCompra, double precoVenda) {
 		this.quantidadeAcoes = quantidadeAcoes;
 		this.precoCompra = precoCompra;
 		this.precoVenda = precoVenda;
-		getValorCorretagemCompra();
-		getValorCorretagemVenda();
-		getLucroPrejuizo();
 	}
 
 	public int getQuantidadeAcoes() {
@@ -49,30 +40,25 @@ public class Ex03 {
 		this.precoVenda = precoVenda;
 	}
 
-	public double getValorCorretagemCompra() {
-		this.valorCorretagemCompra = this.getValorCompra() * this.TAXA_CORRETAGEM; 
-		return this.valorCorretagemCompra;
+	public double getValorCorretagemCompra() {		 
+		return this.getValorCompra() * this.TAXA_CORRETAGEM; 
 	}
 
 	public double getValorCorretagemVenda() {
-		this.valorCorretagemVenda = this.getValorVenda() * this.TAXA_CORRETAGEM;
-		return this.valorCorretagemVenda;
+		return this.getValorVenda() * this.TAXA_CORRETAGEM;
 	}
 	
 	public double getLucroPrejuizo() {
-		this.lucroPrejuizo = this.getValorVenda()-this.getValorCorretagemVenda()-
-				             this.getValorCompra()-this.getValorCorretagemCompra();
-		return this.lucroPrejuizo;
+		return this.getValorVenda()-this.getValorCorretagemVenda()-
+	           this.getValorCompra()-this.getValorCorretagemCompra();
 	}
 
 	public double getValorCompra() {
-		this.valorCompra =  this.quantidadeAcoes * this.precoCompra;
-		return this.valorCompra;
+		return this.quantidadeAcoes * this.precoCompra;
 	}
 
 	public double getValorVenda() {
-		this.valorVenda = this.quantidadeAcoes * this.precoVenda;
-		return this.valorVenda;
+		return this.quantidadeAcoes * this.precoVenda;
 	}
 
 	@Override
@@ -87,9 +73,5 @@ public class Ex03 {
 				  ", lucroPrejuizo=" + this.getLucroPrejuizo() + 
 				  "]";
 	}
-
-	
-	
-
 
 }

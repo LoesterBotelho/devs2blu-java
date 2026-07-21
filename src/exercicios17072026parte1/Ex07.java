@@ -4,15 +4,12 @@ public class Ex07 {
 
 	private String nome = "";
 	private int idade = 0;
-	private int diasVivos = 0;
 
 	public Ex07() { }
 
 	public Ex07(String nome, int idade) {
-		super();
 		this.nome = nome;
 		this.idade = idade;
-		this.getDiasVivo();
 	}
 
 	public String getNome() {
@@ -32,8 +29,7 @@ public class Ex07 {
 	}
 	
 	public int getDiasVivo() {
-		this.diasVivos = (this.idade * 365);
-		return this.diasVivos;
+		return (this.idade * 365);
 	}
 
 	@Override

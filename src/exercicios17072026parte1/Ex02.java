@@ -2,15 +2,12 @@ package exercicios17072026parte1;
 
 public class Ex02 {
 
-	private double mediaAritimetica = 0.0;
 	private String nome = "";
 	private double nota1 = 0.0;
 	private double nota2 = 0.0;
 	private double nota3 = 0.0;
 	private double nota4 = 0.0;
-	
-	
-	
+
 	public Ex02() { }
 
 	public Ex02(double nota1, double nota2, double nota3, double nota4) {		
@@ -18,7 +15,6 @@ public class Ex02 {
 		this.nota2 = nota2;
 		this.nota3 = nota3;
 		this.nota4 = nota4;
-		this.calcularMediaAritimetica();
 	}
 
 	public Ex02(String nome, double nota1, double nota2, double nota3, double nota4) {
@@ -27,7 +23,6 @@ public class Ex02 {
 		this.nota2 = nota2;
 		this.nota3 = nota3;
 		this.nota4 = nota4;
-		this.calcularMediaAritimetica();
 	}
 
 	public String getNome() {
@@ -71,8 +66,7 @@ public class Ex02 {
 	}
 
 	public double calcularMediaAritimetica() {
-		this.mediaAritimetica = (nota1 + nota2 + nota3 + nota4) / 4;
-		return this.mediaAritimetica;
+		return (this.nota1 + this.nota2 + this.nota3 + this.nota4) / 4;
 	}
 
 	public String calcularMediaAritimeticaToString() {	

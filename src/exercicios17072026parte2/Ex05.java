@@ -8,9 +8,6 @@ public class Ex05 {
 	private double d = 0.0;
 	private double e = 0.0;
 	private double f = 0.0;
-	private double denominador = 0.0;
-	private double x = 0.0;
-	private double y = 0.0;
 	
 	public Ex05() { }
 	
@@ -22,8 +19,6 @@ public class Ex05 {
 		this.d = d;
 		this.e = e;
 		this.f = f;
-		getX();
-		getY();
 	}
 
 	public double getA() {
@@ -75,18 +70,15 @@ public class Ex05 {
 	}
 	
 	public double getDenominador() {
-		this.denominador = (a * e) - (b * d);
-		return this.denominador;
+		return (a * e) - (b * d);
 	}
 	
 	public double getX() {
-		this.x = ((c * e) - (b * f)) / this.getDenominador();
-		return this.x;
+		return ((c * e) - (b * f)) / this.getDenominador();
 	}
 	
 	public double getY() {
-		this.y = ((a * f) - (c * d)) / this.getDenominador();
-		return this.y;
+		return ((a * f) - (c * d)) / this.getDenominador();
 	}
 
 	@Override
@@ -102,7 +94,5 @@ public class Ex05 {
 				", y=" + this.getY() + 
 				"]";
 	}
-	
 
-	
 }

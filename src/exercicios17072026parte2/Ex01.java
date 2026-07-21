@@ -5,14 +5,12 @@ public class Ex01 {
 	
 	private double catetoA = 0.0;
 	private double catetoB = 0.0;
-	private double hipotenusa = 0.0;
 
 	public Ex01() {	}
 	
 	public Ex01(double catetoA, double catetoB) {	
 		this.catetoA = catetoA;
 		this.catetoB = catetoB;
-		getHipotenusa();
 	}
 
 	public double getCatetoA() {
@@ -32,13 +30,15 @@ public class Ex01 {
 	}
 	
 	public double getHipotenusa() {
-		this.hipotenusa = Math.sqrt(Math.pow(catetoA, 2) + Math.pow(catetoB, 2));
-		return this.hipotenusa;
+		return Math.sqrt(Math.pow(catetoA, 2) + Math.pow(catetoB, 2));
 	}
 
 	@Override
 	public String toString() {
-		return "Ex1 [catetoA=" + this.getCatetoA() + ", catetoB=" + this.getCatetoB() + ", hipotenusa=" + this.getHipotenusa() + "]";
+		return "Ex1 [catetoA=" + this.getCatetoA() + 
+				", catetoB=" + this.getCatetoB() + 
+				", hipotenusa=" + this.getHipotenusa() + 
+				"]";
 	}
 
 }

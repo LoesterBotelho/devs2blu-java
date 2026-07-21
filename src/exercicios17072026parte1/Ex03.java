@@ -4,16 +4,12 @@ public class Ex03 {
 
 	private double valor01 = 0.0;
 	private double valor02 = 0.0;
-	private double soma = 0.0;
-	private double dobro = 0.0;
 
 	public Ex03() { }
 
 	public Ex03(double valor01, double valor02) {
 		this.valor01 = valor01;
 		this.valor02 = valor02;
-		this.getSoma();
-		this.getDobro();
 	}
 
 	public double getValor01() {
@@ -33,13 +29,11 @@ public class Ex03 {
 	}
 	
 	public double getSoma() {
-		this.soma = this.valor01 + this.valor02;
-		return this.soma;
+		return this.valor01 + this.valor02;
 	}
 	
 	public double getDobro() {
-		this.dobro = (this.valor01 + this.valor02) * 2;		
-		return dobro;
+		return (this.valor01 + this.valor02) * 2;		
 	}
 	
 	@Override

@@ -3,13 +3,11 @@ package exercicios17072026parte1;
 public class Ex09 {
 
 	private double valorProduto = 0;
-	private double valorComDesconto = 0;
 
 	public Ex09() { }
 
 	public Ex09(double valorProduto) {		
 		this.valorProduto = valorProduto;
-		this.getValorComDesconto();
 	}
 
 	public double getValorProduto() {
@@ -21,13 +19,14 @@ public class Ex09 {
 	}
 
 	public double getValorComDesconto() {
-		this.valorComDesconto = this.valorProduto - (this.valorProduto * 0.09);
-		return this.valorComDesconto;
+		return this.valorProduto - (this.valorProduto * 0.09);
 	}
 
 	@Override
 	public String toString() {
-		return "Ex09 [valorProduto=" + valorProduto + ", valorComDesconto=" + valorComDesconto + "]";
+		return "Ex09 [valorProduto=" + this.getValorProduto() + 
+				", valorComDesconto=" + this.getValorComDesconto() + 
+				"]";
 	}
 
 }

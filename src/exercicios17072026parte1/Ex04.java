@@ -5,14 +5,11 @@ import java.time.LocalDate;
 public class Ex04 {
 
 	private int anoNascimento = 0;
-	private int idade = 0;
-	private int anoAtual = LocalDate.now().getYear();
 
 	public Ex04() { }
 
 	public Ex04(int anoNascimento) {
-		this.anoNascimento = anoNascimento;
-		this.getIdade();		
+		this.anoNascimento = anoNascimento;	
 	}
 
 	public double getAnoNascimento() {
@@ -24,8 +21,8 @@ public class Ex04 {
 	}
 	
 	public int getIdade() {
-		this.idade = (anoAtual - anoNascimento);
-		return this.idade;
+		var anoAtual = LocalDate.now().getYear();
+		return (anoAtual - anoNascimento);
 	}
 
 	@Override

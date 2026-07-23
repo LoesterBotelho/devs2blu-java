@@ -8,6 +8,8 @@ import java.util.Scanner;
  * O switch é utilizado quando precisamos executar
  * diferentes blocos de código com base em um valor.
  */
+
+
 public class ExemploSwitchCase {
 
     public static void main(String[] args) {
@@ -27,6 +29,8 @@ public class ExemploSwitchCase {
          * O switch avalia o valor da variável "opcao"
          * e executa o case correspondente.
          */
+        
+        // byte short int char
         switch (opcao) {
 
             case 1:

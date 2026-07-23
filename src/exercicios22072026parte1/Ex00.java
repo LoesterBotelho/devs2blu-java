@@ -14,8 +14,7 @@ public class Ex00 {
 
 	public String getDiaSemanaTexto() {
 
-		        switch (this.diaSemana) {
-		        
+		        switch (this.diaSemana) {		        
 	            case Calendar.SUNDAY: return "Domingo";
 				case Calendar.MONDAY: return "Segunda-feira";
 				case Calendar.TUESDAY: return "Terça-feira";

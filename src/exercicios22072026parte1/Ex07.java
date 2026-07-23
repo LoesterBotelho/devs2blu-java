@@ -30,7 +30,6 @@ public class Ex07 {
 	
 	public double getResultado() {
 
-
 		switch (this.getOperacao()) {
 		  case SOMA: return this.numeroA + this.numeroB;
 		  case SUBTRACAO: return this.numeroA - this.numeroB;

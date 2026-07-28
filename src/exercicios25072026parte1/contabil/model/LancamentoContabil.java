@@ -12,11 +12,21 @@ public class LancamentoContabil extends Entidade<Integer> {
 
 	private static final long serialVersionUID = 1L;
 
+	/*
+	 * ====================================== DADOS DO LANÇAMENTO
+	 * ======================================
+	 */
+
 	private LocalDate data;
 
 	private String documento;
 
 	private String historico;
+
+	/*
+	 * ====================================== STATUS
+	 * ======================================
+	 */
 
 	private StatusLancamento status;
 
@@ -24,7 +34,17 @@ public class LancamentoContabil extends Entidade<Integer> {
 
 	private String motivoCancelamento;
 
+	/*
+	 * ====================================== ITENS
+	 * ======================================
+	 */
+
 	private final List<ItemLancamento> itens = new ArrayList<>();
+
+	/*
+	 * ====================================== CONSTRUTORES
+	 * ======================================
+	 */
 
 	public LancamentoContabil() {
 
@@ -37,14 +57,17 @@ public class LancamentoContabil extends Entidade<Integer> {
 		setId(id);
 
 		this.data = data;
-
 		this.documento = documento;
-
 		this.historico = historico;
 
 		this.status = StatusLancamento.RASCUNHO;
 
 	}
+
+	/*
+	 * ====================================== GETTERS / SETTERS
+	 * ======================================
+	 */
 
 	public LocalDate getData() {
 
@@ -118,39 +141,20 @@ public class LancamentoContabil extends Entidade<Integer> {
 
 	}
 
-	/**
-	 * Adiciona item e cria relacionamento com o lançamento
+	/*
+	 * ====================================== MÉTODOS AUXILIARES
+	 * ======================================
 	 */
-	public void adicionarItem(ItemLancamento item) {
 
-		validarAlteracao();
+	public boolean possuiDocumento() {
 
-		Objects.requireNonNull(item, "Item obrigatório");
-
-		item.setLancamento(this);
-
-		itens.add(item);
+		return documento != null && !documento.isBlank();
 
 	}
 
-	/**
-	 * Remove item e remove vínculo
-	 */
-	public void removerItem(ItemLancamento item) {
+	public boolean possuiHistorico() {
 
-		validarAlteracao();
-
-		if (itens.remove(item)) {
-
-			item.setLancamento(null);
-
-		}
-
-	}
-
-	public int quantidadeItens() {
-
-		return itens.size();
+		return historico != null && !historico.isBlank();
 
 	}
 
@@ -160,15 +164,166 @@ public class LancamentoContabil extends Entidade<Integer> {
 
 	}
 
-	public BigDecimal totalDebito() {
+	public int quantidadeItens() {
+
+		return itens.size();
+
+	}
+
+	public boolean estaRascunho() {
+
+		return status == StatusLancamento.RASCUNHO;
+
+	}
+
+	public boolean estaValidado() {
+
+		return status == StatusLancamento.VALIDADO;
+
+	}
+
+	public boolean estaPostado() {
+
+		return status == StatusLancamento.POSTADO;
+
+	}
+
+	public boolean estaCancelado() {
+
+		return status == StatusLancamento.CANCELADO;
+
+	}
+
+	/*
+	 * ====================================== GERENCIAMENTO DOS ITENS
+	 * ======================================
+	 */
+
+	public void adicionarItem(ItemLancamento item) {
+
+		validarAlteracao();
+
+		Objects.requireNonNull(item, "Item obrigatório");
+
+		if (itens.contains(item)) {
+
+			throw new IllegalStateException("Item já pertence ao lançamento");
+
+		}
+
+		if (item.getLancamento() != null && item.getLancamento() != this) {
+
+			throw new IllegalStateException("Item já pertence a outro lançamento");
+
+		}
+
+		item.setLancamento(this);
+
+		itens.add(item);
+
+	}
+
+	public void removerItem(ItemLancamento item) {
+
+		validarAlteracao();
+
+		Objects.requireNonNull(item, "Item obrigatório");
+
+		if (!itens.remove(item)) {
+
+			throw new IllegalStateException("Item não encontrado no lançamento");
+
+		}
+
+		item.setLancamento(null);
+
+	}
+
+	public void limparItens() {
+
+		validarAlteracao();
+
+		for (ItemLancamento item : itens) {
+
+			item.setLancamento(null);
+
+		}
+
+		itens.clear();
+
+	}
+
+	public ItemLancamento getItem(int indice) {
+
+		return itens.get(indice);
+
+	}
+
+	public java.util.Optional<ItemLancamento> buscarItem(Integer id) {
+
+		return itens.stream()
+
+				.filter(item -> Objects.equals(item.getId(), id))
+
+				.findFirst();
+
+	}
+
+	/*
+	 * ====================================== CONSULTAS
+	 * ======================================
+	 */
+
+	public List<ItemLancamento> getDebitos() {
 
 		return itens.stream()
 
 				.filter(ItemLancamento::isDebito)
 
-				.map(ItemLancamento::getValor)
+				.toList();
 
-				.filter(Objects::nonNull)
+	}
+
+	public List<ItemLancamento> getCreditos() {
+
+		return itens.stream()
+
+				.filter(ItemLancamento::isCredito)
+
+				.toList();
+
+	}
+
+	public long quantidadeDebitos() {
+
+		return getDebitos().size();
+
+	}
+
+	public long quantidadeCreditos() {
+
+		return getCreditos().size();
+
+	}
+
+	public boolean possuiCentroCusto() {
+
+		return itens.stream()
+
+				.anyMatch(ItemLancamento::possuiCentroCusto);
+
+	}
+
+	/*
+	 * ====================================== TOTAIS
+	 * ======================================
+	 */
+
+	public BigDecimal totalDebito() {
+
+		return getDebitos().stream()
+
+				.map(ItemLancamento::valorAbsoluto)
 
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -176,42 +331,65 @@ public class LancamentoContabil extends Entidade<Integer> {
 
 	public BigDecimal totalCredito() {
 
-		return itens.stream()
+		return getCreditos().stream()
 
-				.filter(ItemLancamento::isCredito)
-
-				.map(ItemLancamento::getValor)
-
-				.filter(Objects::nonNull)
+				.map(ItemLancamento::valorAbsoluto)
 
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 
 	}
 
-	public BigDecimal valorTotal() {
+	/**
+	 * Valor financeiro do lançamento.
+	 *
+	 * Como na partida dobrada Débito = Crédito, basta retornar um dos lados.
+	 */
+	public BigDecimal valorLancamento() {
 
-		return totalDebito().add(totalCredito());
+		return totalDebito();
 
 	}
 
 	/**
-	 * Regra principal da contabilidade: Débito = Crédito
+	 * Diferença entre débitos e créditos.
+	 *
+	 * Deve ser ZERO em um lançamento válido.
 	 */
-	public boolean partidaDobradaValida() {
+	public BigDecimal valorLiquido() {
 
 		return totalDebito()
 
-				.compareTo(totalCredito())
-
-				== 0;
+				.subtract(totalCredito());
 
 	}
+
+	/**
+	 * Regra fundamental da contabilidade.
+	 */
+	public boolean partidaDobradaValida() {
+
+		return valorLiquido()
+
+				.compareTo(BigDecimal.ZERO) == 0;
+
+	}
+
+	/*
+	 * ====================================== VALIDAÇÕES
+	 * ======================================
+	 */
 
 	public void validar() {
 
 		if (data == null) {
 
 			throw new IllegalStateException("Data obrigatória");
+
+		}
+
+		if (documento == null || documento.isBlank()) {
+
+			throw new IllegalStateException("Documento obrigatório");
 
 		}
 
@@ -229,31 +407,13 @@ public class LancamentoContabil extends Entidade<Integer> {
 
 		for (ItemLancamento item : itens) {
 
-			try {
-
-				item.validar();
-
-			} catch (Exception e) {
-
-				throw new IllegalStateException(
-
-						"Item inválido: " + item,
-
-						e
-
-				);
-
-			}
+			item.validar();
 
 		}
 
 		if (!partidaDobradaValida()) {
 
-			throw new IllegalStateException(
-
-					"Débito deve ser igual ao crédito"
-
-			);
+			throw new IllegalStateException("Débito deve ser igual ao crédito");
 
 		}
 
@@ -263,27 +423,40 @@ public class LancamentoContabil extends Entidade<Integer> {
 
 		validar();
 
-		if (status != StatusLancamento.RASCUNHO
+		if (status != StatusLancamento.RASCUNHO && status != StatusLancamento.VALIDADO) {
 
-				&&
-
-				status != StatusLancamento.VALIDADO) {
-
-			throw new IllegalStateException(
-
-					"Lançamento não pode ser postado"
-
-			);
+			throw new IllegalStateException("Somente lançamentos em rascunho ou validados podem ser postados");
 
 		}
 
 	}
 
+	public void validarAlteracao() {
+
+		if (estaPostado()) {
+
+			throw new IllegalStateException("Lançamento postado não pode ser alterado");
+
+		}
+
+		if (estaCancelado()) {
+
+			throw new IllegalStateException("Lançamento cancelado não pode ser alterado");
+
+		}
+
+	}
+
+	/*
+	 * ====================================== CICLO DE VIDA
+	 * ======================================
+	 */
+
 	public void validarLancamento() {
 
 		validar();
 
-		this.status = StatusLancamento.VALIDADO;
+		status = StatusLancamento.VALIDADO;
 
 	}
 
@@ -291,7 +464,7 @@ public class LancamentoContabil extends Entidade<Integer> {
 
 		validarParaPostagem();
 
-		this.status = StatusLancamento.POSTADO;
+		status = StatusLancamento.POSTADO;
 
 	}
 
@@ -299,111 +472,136 @@ public class LancamentoContabil extends Entidade<Integer> {
 
 		if (!estaPostado()) {
 
-			throw new IllegalStateException(
-
-					"Somente lançamento postado pode ser cancelado"
-
-			);
+			throw new IllegalStateException("Somente lançamento postado pode ser cancelado");
 
 		}
 
 		if (motivo == null || motivo.isBlank()) {
 
-			throw new IllegalArgumentException(
-
-					"Informe o motivo do cancelamento"
-
-			);
+			throw new IllegalArgumentException("Motivo do cancelamento obrigatório");
 
 		}
 
-		this.status = StatusLancamento.CANCELADO;
+		status = StatusLancamento.CANCELADO;
 
-		this.dataCancelamento = LocalDate.now();
+		dataCancelamento = LocalDate.now();
 
-		this.motivoCancelamento = motivo;
+		motivoCancelamento = motivo;
 
 	}
 
-	public void validarAlteracao() {
+	/*
+	 * ====================================== EQUALS / HASHCODE
+	 * ======================================
+	 */
 
-		if (status == StatusLancamento.POSTADO) {
+	@Override
+	public boolean equals(Object obj) {
 
-			throw new IllegalStateException(
+		if (this == obj) {
 
-					"Lançamento postado não pode ser alterado"
-
-			);
+			return true;
 
 		}
 
-		if (status == StatusLancamento.CANCELADO) {
+		if (!(obj instanceof LancamentoContabil outro)) {
 
-			throw new IllegalStateException(
-
-					"Lançamento cancelado não pode ser alterado"
-
-			);
+			return false;
 
 		}
 
-	}
+		if (getId() == null || outro.getId() == null) {
 
-	public boolean estaPostado() {
+			return false;
 
-		return status == StatusLancamento.POSTADO;
+		}
 
-	}
-
-	public boolean estaValidado() {
-
-		return status == StatusLancamento.VALIDADO;
-
-	}
-
-	public boolean estaCancelado() {
-
-		return status == StatusLancamento.CANCELADO;
+		return Objects.equals(getId(), outro.getId());
 
 	}
 
 	@Override
+	public int hashCode() {
+
+		if (getId() == null) {
+
+			return System.identityHashCode(this);
+
+		}
+
+		return Objects.hash(getId());
+
+	}
+
+	/*
+	 * ====================================== TO STRING
+	 * ======================================
+	 */
+
+	@Override
 	public String toString() {
+
+		StringBuilder itensTexto = new StringBuilder();
+
+		for (ItemLancamento item : itens) {
+
+			itensTexto
+
+					.append(item)
+
+					.append(System.lineSeparator());
+
+		}
 
 		return """
 
-				==============================
-				 LANÇAMENTO CONTÁBIL
-				==============================
-				ID..........: %s
-				Data........: %s
-				Documento...: %s
-				Histórico...: %s
-				Status......: %s
-				Débito......: R$ %s
-				Crédito.....: R$ %s
-				Quantidade..: %s
-				==============================
+				==========================================
+				       LANÇAMENTO CONTÁBIL
+				==========================================
+				ID................: %s
+				Data..............: %s
+				Documento.........: %s
+				Histórico.........: %s
 
-				""".formatted(
+				Status............: %s
 
-				getId(),
+				Débitos...........: R$ %s
+				Créditos..........: R$ %s
+				Valor Lançamento..: R$ %s
 
-				data,
+				Quantidade Itens..: %d
 
-				documento,
+				------------------------------------------
+				ITENS
+				------------------------------------------
+				%s
+				==========================================
 
-				historico,
+				"""
 
-				status,
+				.formatted(
 
-				totalDebito(),
+						getId(),
 
-				totalCredito(),
+						data,
 
-				itens.size()
+						documento,
 
-		);
+						historico,
+
+						status,
+
+						totalDebito(),
+
+						totalCredito(),
+
+						valorLancamento(),
+
+						quantidadeItens(),
+
+						itensTexto
+
+				);
 
 	}
 

@@ -1,75 +1,36 @@
 package exercicios25072026parte1.contabil.model;
 
-import java.util.Objects;
+import java.io.Serializable;
 
-public class HistoricoPadrao extends Entidade<Integer>
-        implements Comparable<HistoricoPadrao> {
+import exercicios25072026parte1.contabil.interfaces.Identificavel;
 
-	private static final long serialVersionUID = 7297805266880224686L;
-	private Integer codigo;
-    private String descricao;
 
-    public HistoricoPadrao() {
+public abstract class HistoricoPadrao<ID>
+        implements Identificavel<ID>, Serializable {
 
-    }
 
-    public HistoricoPadrao(Integer codigo,
-                           String descricao) {
+    private static final long serialVersionUID = 1L;
 
-        this.codigo = codigo;
-        this.descricao = descricao;
 
-    }
+    private ID id;
+
+
 
     @Override
-    public Integer getId() {
-        return codigo;
+    public ID getId() {
+
+        return id;
+
     }
 
-    public Integer getCodigo() {
-        return codigo;
-    }
 
-    public void setCodigo(Integer codigo) {
-        this.codigo = codigo;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
 
     @Override
-    public int compareTo(HistoricoPadrao o) {
-        return codigo.compareTo(o.codigo);
-    }
+    public void setId(ID id) {
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(codigo);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-
-        if (this == obj)
-            return true;
-
-        if (!(obj instanceof HistoricoPadrao other))
-            return false;
-
-        return Objects.equals(codigo, other.codigo);
+        this.id = id;
 
     }
 
-    @Override
-    public String toString() {
-
-        return codigo + " - " + descricao;
-
-    }
 
 }

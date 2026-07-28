@@ -1,7 +1,5 @@
 package exercicios25072026parte1.contabil.config;
 
-
-import exercicios25072026parte1.contabil.initializer.ContabilDataInitializer;
 import exercicios25072026parte1.contabil.repository.CentroCustoRepository;
 import exercicios25072026parte1.contabil.repository.LancamentoRepository;
 import exercicios25072026parte1.contabil.repository.PlanoContaRepository;
@@ -12,249 +10,131 @@ import exercicios25072026parte1.contabil.service.LivroDiarioService;
 import exercicios25072026parte1.contabil.service.LivroRazaoService;
 import exercicios25072026parte1.contabil.service.PlanoContaService;
 
-
-
 public class ContabilContext {
 
+    /*
+     * ======================================
+     * REPOSITÓRIOS
+     * ======================================
+     */
 
     private final PlanoContaRepository planoContaRepository;
 
-
     private final LancamentoRepository lancamentoRepository;
-
 
     private final CentroCustoRepository centroCustoRepository;
 
-
+    /*
+     * ======================================
+     * SERVICES
+     * ======================================
+     */
 
     private final PlanoContaService planoContaService;
 
-
     private final LancamentoContabilService lancamentoService;
-
 
     private final CentroCustoService centroCustoService;
 
-
-
     private final LivroDiarioService livroDiarioService;
-
 
     private final LivroRazaoService livroRazaoService;
 
-
     private final BalanceteService balanceteService;
-
-
-
-
 
     public ContabilContext() {
 
+        /*
+         * Repositórios
+         */
 
-        planoContaRepository =
-                new PlanoContaRepository();
+        this.planoContaRepository = new PlanoContaRepository();
 
+        this.lancamentoRepository = new LancamentoRepository();
 
+        this.centroCustoRepository = new CentroCustoRepository();
 
-        lancamentoRepository =
-                new LancamentoRepository();
+        /*
+         * Serviços
+         */
 
+        this.planoContaService =
+                new PlanoContaService(planoContaRepository);
 
-
-        centroCustoRepository =
-                new CentroCustoRepository();
-
-
-
-
-
-        planoContaService =
-
-                new PlanoContaService(
-                        planoContaRepository
-                );
-
-
-
-
-
-        lancamentoService =
-
+        this.lancamentoService =
                 new LancamentoContabilService(
-                        lancamentoRepository
-                );
-
-
-
-
-
-        centroCustoService =
-
-                new CentroCustoService(
-                        centroCustoRepository
-                );
-
-
-
-
-
-        livroDiarioService =
-
-                new LivroDiarioService(
-                        lancamentoService
-                );
-
-
-
-
-
-        livroRazaoService =
-
-                new LivroRazaoService(
-                        lancamentoService
-                );
-
-
-
-
-
-        balanceteService =
-
-                new BalanceteService(
-                        planoContaService
-                );
-
-
-
-
-
-        carregarDados();
-
-
-    }
-
-
-
-
-
-
-
-    private void carregarDados() {
-
-
-        ContabilDataInitializer initializer =
-
-                new ContabilDataInitializer(
+                        lancamentoRepository,
                         planoContaRepository
                 );
 
+        this.centroCustoService =
+                new CentroCustoService(centroCustoRepository);
 
-        initializer.carregar();
+        this.livroDiarioService =
+                new LivroDiarioService(lancamentoService);
 
+        this.livroRazaoService =
+                new LivroRazaoService(lancamentoService);
 
-    }
+        this.balanceteService =
+                new BalanceteService(planoContaService);
 
+        /*
+         * Carga inicial
+         */
 
-
-
-
-
-
-
-    public PlanoContaService getPlanoContaService() {
-
-        return planoContaService;
-
-    }
-
-
-
-
-
-
-    public LancamentoContabilService getLancamentoService() {
-
-        return lancamentoService;
+        inicializar();
 
     }
 
+    private void inicializar() {
 
-
-
-
-
-    public CentroCustoService getCentroCustoService() {
-
-        return centroCustoService;
+        new ContabilInitializer(
+                planoContaService
+        ).carregar();
 
     }
 
-
-
-
-
-
-    public LivroDiarioService getLivroDiarioService() {
-
-        return livroDiarioService;
-
-    }
-
-
-
-
-
-
-    public LivroRazaoService getLivroRazaoService() {
-
-        return livroRazaoService;
-
-    }
-
-
-
-
-
-
-    public BalanceteService getBalanceteService() {
-
-        return balanceteService;
-
-    }
-
-
-
-
-
+    /*
+     * ======================================
+     * GETTERS
+     * ======================================
+     */
 
     public PlanoContaRepository getPlanoContaRepository() {
-
         return planoContaRepository;
-
     }
-
-
-
-
-
 
     public LancamentoRepository getLancamentoRepository() {
-
         return lancamentoRepository;
-
     }
-
-
-
-
-
 
     public CentroCustoRepository getCentroCustoRepository() {
-
         return centroCustoRepository;
-
     }
 
+    public PlanoContaService getPlanoContaService() {
+        return planoContaService;
+    }
+
+    public LancamentoContabilService getLancamentoService() {
+        return lancamentoService;
+    }
+
+    public CentroCustoService getCentroCustoService() {
+        return centroCustoService;
+    }
+
+    public LivroDiarioService getLivroDiarioService() {
+        return livroDiarioService;
+    }
+
+    public LivroRazaoService getLivroRazaoService() {
+        return livroRazaoService;
+    }
+
+    public BalanceteService getBalanceteService() {
+        return balanceteService;
+    }
 
 }

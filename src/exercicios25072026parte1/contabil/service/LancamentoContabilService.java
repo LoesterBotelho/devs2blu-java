@@ -10,340 +10,309 @@ import exercicios25072026parte1.contabil.model.ItemLancamento;
 import exercicios25072026parte1.contabil.model.LancamentoContabil;
 import exercicios25072026parte1.contabil.model.PlanoConta;
 import exercicios25072026parte1.contabil.repository.LancamentoRepository;
+import exercicios25072026parte1.contabil.repository.PlanoContaRepository;
 
 public class LancamentoContabilService {
 
-	private final LancamentoRepository repository;
+    private final LancamentoRepository repository;
 
-	public LancamentoContabilService(LancamentoRepository repository) {
+    private final PlanoContaRepository planoContaRepository;
 
-		this.repository = repository;
+    public LancamentoContabilService(
+            LancamentoRepository repository,
+            PlanoContaRepository planoContaRepository) {
 
-	}
+        this.repository = repository;
+        this.planoContaRepository = planoContaRepository;
 
-	/**
-	 * Salva lançamento contábil
-	 */
-	public void salvar(LancamentoContabil lancamento) {
+    }
 
-		validar(lancamento);
+    public void salvar(
+            LancamentoContabil lancamento) {
 
-		atualizarSaldo(lancamento);
+        validar(lancamento);
 
-		repository.salvar(lancamento);
+        atualizarSaldo(lancamento);
 
-	}
+        repository.salvar(lancamento);
 
-	/**
-	 * Buscar lançamento por ID
-	 */
-	public Optional<LancamentoContabil> buscar(Integer id) {
+    }
 
-		return repository.buscar(id);
+    public Optional<LancamentoContabil> buscar(
+            Integer id) {
 
-	}
+        return repository.buscar(id);
 
-	/**
-	 * Lista lançamentos ordenados por data
-	 */
-	public List<LancamentoContabil> listar() {
+    }
 
-		return repository.listarOrdenado(
+    public List<LancamentoContabil> listar() {
 
-				Comparator.comparing(LancamentoContabil::getData)
+        return repository.listarOrdenado(
 
-		);
+                Comparator.comparing(
+                        LancamentoContabil::getData
+                )
 
-	}
+        );
 
-	/**
-	 * Lista por período
-	 */
-	public List<LancamentoContabil> listarPeriodo(LocalDate inicio, LocalDate fim) {
+    }
 
-		return repository.listar()
+    public List<LancamentoContabil> listarPeriodo(
+            LocalDate inicio,
+            LocalDate fim) {
 
-				.stream()
+        return repository.listar()
 
-				.filter(
+                .stream()
 
-						lancamento ->
+                .filter(lancamento ->
 
-						!lancamento.getData().isBefore(inicio)
+                        !lancamento.getData().isBefore(inicio)
 
-								&&
+                        &&
 
-								!lancamento.getData().isAfter(fim)
+                        !lancamento.getData().isAfter(fim))
 
-				)
+                .toList();
 
-				.toList();
+    }
 
-	}
+    public BigDecimal totalDebitos() {
 
-	/**
-	 * Total de débitos
-	 */
-	public BigDecimal totalDebitos() {
+        return repository.listar()
 
-		return repository.listar()
+                .stream()
 
-				.stream()
+                .map(LancamentoContabil::totalDebito)
 
-				.map(LancamentoContabil::totalDebito)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-				.reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 
-	}
+    public BigDecimal totalCreditos() {
 
-	/**
-	 * Total de créditos
-	 */
-	public BigDecimal totalCreditos() {
+        return repository.listar()
 
-		return repository.listar()
+                .stream()
 
-				.stream()
+                .map(LancamentoContabil::totalCredito)
 
-				.map(LancamentoContabil::totalCredito)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-				.reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 
-	}
+    public void remover(
+            Integer id) {
 
-	/**
-	 * Remove lançamento e desfaz saldo
-	 */
-	public void remover(Integer id) {
+        LancamentoContabil lancamento =
 
-		LancamentoContabil lancamento =
+                repository.buscar(id)
 
-				repository.buscar(id)
+                        .orElseThrow(() ->
 
-						.orElseThrow(
+                                new RuntimeException(
+                                        "Lançamento não encontrado"
+                                ));
 
-								() ->
+        reverterSaldo(lancamento);
 
-								new RuntimeException("Lançamento não encontrado")
+        repository.removerPorId(id);
 
-						);
+    }
 
-		reverterSaldo(lancamento);
+    private void validar(
+            LancamentoContabil lancamento) {
 
-		repository.removerPorId(id);
+        if (lancamento == null) {
 
-	}
+            throw new RuntimeException(
+                    "Lançamento obrigatório"
+            );
 
-	/**
-	 * Validação geral
-	 */
-	private void validar(LancamentoContabil lancamento) {
+        }
 
-		if (lancamento == null) {
+        if (lancamento.getData() == null) {
 
-			throw new RuntimeException("Lançamento obrigatório");
+            throw new RuntimeException(
+                    "Data obrigatória"
+            );
 
-		}
+        }
 
-		if (lancamento.getData() == null) {
+        if (lancamento.getItens() == null
+                || lancamento.getItens().isEmpty()) {
 
-			throw new RuntimeException("Data obrigatória");
+            throw new RuntimeException(
+                    "Lançamento sem itens"
+            );
 
-		}
+        }
 
-		if (lancamento.getItens() == null ||
+        validarItens(lancamento);
 
-				lancamento.getItens().isEmpty()) {
+        if (!lancamento.partidaDobradaValida()) {
 
-			throw new RuntimeException("Lançamento sem itens");
+            throw new RuntimeException(
+                    "Débito deve ser igual ao crédito"
+            );
 
-		}
+        }
 
-		validarItens(lancamento);
+    }
 
-		if (!lancamento.partidaDobradaValida()) {
+    private void validarItens(
+            LancamentoContabil lancamento) {
 
-			throw new RuntimeException(
+        boolean possuiDebito = false;
+        boolean possuiCredito = false;
 
-					"Débito deve ser igual ao crédito"
+        for (ItemLancamento item : lancamento.getItens()) {
 
-			);
+            if (item == null) {
 
-		}
+                throw new RuntimeException(
+                        "Item inválido"
+                );
 
-	}
+            }
 
-	/**
-	 * Validação dos itens
-	 */
-	private void validarItens(LancamentoContabil lancamento) {
+            PlanoConta conta = item.getConta();
 
-		boolean possuiDebito = false;
+            if (conta == null) {
 
-		boolean possuiCredito = false;
+                throw new RuntimeException(
+                        "Conta obrigatória"
+                );
 
-		for (ItemLancamento item : lancamento.getItens()) {
+            }
 
-			if (item == null) {
+            PlanoConta contaRepositorio =
 
-				throw new RuntimeException("Item inválido");
+                    planoContaRepository
 
-			}
+                            .buscar(conta.getId())
 
-			PlanoConta conta = item.getConta();
+                            .orElseThrow(() ->
 
-			if (conta == null) {
+                                    new RuntimeException(
 
-				throw new RuntimeException("Conta obrigatória");
+                                            "Conta inexistente: "
+                                                    + conta.getCodigo()
 
-			}
+                                    ));
 
-			if (!conta.isAnalitica()) {
+            if (!contaRepositorio.isAnalitica()) {
 
-				throw new RuntimeException(
+                throw new RuntimeException(
 
-						"Somente contas analíticas recebem lançamento: " + conta
+                        "Somente contas analíticas recebem lançamento: "
+                                + contaRepositorio.getCodigo()
 
-				);
+                );
 
-			}
+            }
 
-			if (item.getValor() == null ||
+            if (item.getValor() == null
+                    || item.getValor().compareTo(BigDecimal.ZERO) <= 0) {
 
-					item.getValor().compareTo(BigDecimal.ZERO) <= 0) {
+                throw new RuntimeException(
+                        "Valor inválido"
+                );
 
-				throw new RuntimeException("Valor inválido");
+            }
 
-			}
+            if (item.isDebito()) {
+                possuiDebito = true;
+            }
 
-			if (item.isDebito()) {
+            if (item.isCredito()) {
+                possuiCredito = true;
+            }
 
-				possuiDebito = true;
+        }
 
-			}
+        if (!possuiDebito) {
 
-			if (item.isCredito()) {
+            throw new RuntimeException(
+                    "Não existe débito"
+            );
 
-				possuiCredito = true;
+        }
 
-			}
+        if (!possuiCredito) {
 
-		}
+            throw new RuntimeException(
+                    "Não existe crédito"
+            );
 
-		if (!possuiDebito) {
+        }
 
-			throw new RuntimeException("Não existe débito");
+    }
 
-		}
+    private void atualizarSaldo(
+            LancamentoContabil lancamento) {
 
-		if (!possuiCredito) {
+        for (ItemLancamento item : lancamento.getItens()) {
 
-			throw new RuntimeException("Não existe crédito");
+            PlanoConta conta =
 
-		}
+                    planoContaRepository
 
-	}
+                            .buscar(item.getConta().getId())
 
-	/**
-	 * Atualiza saldo das contas
-	 */
-	private void atualizarSaldo(LancamentoContabil lancamento) {
+                            .orElseThrow();
 
-		lancamento.getItens()
+            BigDecimal saldo = conta.getSaldo();
 
-				.forEach(
+            if (item.isDebito()) {
 
-						item -> {
+                conta.setSaldo(
+                        saldo.add(item.getValor())
+                );
 
-							PlanoConta conta = item.getConta();
+            } else {
 
-							BigDecimal saldoAtual =
+                conta.setSaldo(
+                        saldo.subtract(item.getValor())
+                );
 
-									conta.getSaldo() == null
+            }
 
-											?
+        }
 
-											BigDecimal.ZERO
+    }
 
-											:
+    private void reverterSaldo(
+            LancamentoContabil lancamento) {
 
-											conta.getSaldo();
+        for (ItemLancamento item : lancamento.getItens()) {
 
-							if (item.isDebito()) {
+            PlanoConta conta =
 
-								conta.setSaldo(
+                    planoContaRepository
 
-										saldoAtual.add(item.getValor())
+                            .buscar(item.getConta().getId())
 
-						);
+                            .orElseThrow();
 
-							}
+            BigDecimal saldo = conta.getSaldo();
 
-						else {
+            if (item.isDebito()) {
 
-								conta.setSaldo(
+                conta.setSaldo(
+                        saldo.subtract(item.getValor())
+                );
 
-										saldoAtual.subtract(item.getValor())
+            } else {
 
-						);
+                conta.setSaldo(
+                        saldo.add(item.getValor())
+                );
 
-							}
+            }
 
-						}
+        }
 
-				);
-
-	}
-
-	/**
-	 * Reverte saldo ao remover lançamento
-	 */
-	private void reverterSaldo(LancamentoContabil lancamento) {
-
-		lancamento.getItens()
-
-				.forEach(
-
-						item -> {
-
-							PlanoConta conta = item.getConta();
-
-							BigDecimal saldoAtual =
-
-									conta.getSaldo() == null
-
-											?
-
-											BigDecimal.ZERO
-
-											:
-
-											conta.getSaldo();
-
-							if (item.isDebito()) {
-
-								conta.setSaldo(
-
-										saldoAtual.subtract(item.getValor())
-
-						);
-
-							}
-
-						else {
-
-								conta.setSaldo(
-
-										saldoAtual.add(item.getValor())
-
-						);
-
-							}
-
-						}
-
-				);
-
-	}
+    }
 
 }

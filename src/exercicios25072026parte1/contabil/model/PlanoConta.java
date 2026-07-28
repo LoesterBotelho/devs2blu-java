@@ -9,64 +9,38 @@ import java.util.Objects;
 import exercicios25072026parte1.contabil.enums.NaturezaConta;
 import exercicios25072026parte1.contabil.enums.TipoConta;
 
-
 public class PlanoConta extends Entidade<Integer>
         implements Comparable<PlanoConta> {
 
-
     private static final long serialVersionUID = 1L;
-
-
 
     private Integer codigoInterno;
 
-
     private String codigo;
-
 
     private String descricao;
 
-
     private NaturezaConta natureza;
-
 
     private TipoConta tipoConta;
 
-
     private Integer nivel;
-
 
     private boolean aceitaLancamento;
 
-
-    private boolean ativo;
-
-
+    private boolean ativo = true;
 
     private PlanoConta contaPai;
-
-
 
     private final List<PlanoConta> contasFilhas =
             new ArrayList<>();
 
-
-
     private BigDecimal saldo =
             BigDecimal.ZERO;
-
-
-
-
 
     public PlanoConta() {
 
     }
-
-
-
-
-
 
     public PlanoConta(
             Integer id,
@@ -76,7 +50,6 @@ public class PlanoConta extends Entidade<Integer>
             TipoConta tipoConta,
             Integer nivel,
             boolean aceitaLancamento) {
-
 
         setId(id);
 
@@ -91,11 +64,6 @@ public class PlanoConta extends Entidade<Integer>
 
     }
 
-
-
-
-
-
     public PlanoConta(
             Integer id,
             Integer codigoInterno,
@@ -105,7 +73,6 @@ public class PlanoConta extends Entidade<Integer>
             TipoConta tipoConta,
             Integer nivel,
             boolean aceitaLancamento) {
-
 
         setId(id);
 
@@ -120,19 +87,11 @@ public class PlanoConta extends Entidade<Integer>
 
     }
 
-
-
-
-
-
-
     public Integer getCodigoInterno() {
 
         return codigoInterno;
 
     }
-
-
 
     public void setCodigoInterno(Integer codigoInterno) {
 
@@ -140,19 +99,11 @@ public class PlanoConta extends Entidade<Integer>
 
     }
 
-
-
-
-
-
-
     public String getCodigo() {
 
         return codigo;
 
     }
-
-
 
     public void setCodigo(String codigo) {
 
@@ -160,19 +111,11 @@ public class PlanoConta extends Entidade<Integer>
 
     }
 
-
-
-
-
-
-
     public String getDescricao() {
 
         return descricao;
 
     }
-
-
 
     public void setDescricao(String descricao) {
 
@@ -180,19 +123,11 @@ public class PlanoConta extends Entidade<Integer>
 
     }
 
-
-
-
-
-
-
     public NaturezaConta getNatureza() {
 
         return natureza;
 
     }
-
-
 
     public void setNatureza(NaturezaConta natureza) {
 
@@ -200,19 +135,11 @@ public class PlanoConta extends Entidade<Integer>
 
     }
 
-
-
-
-
-
-
     public TipoConta getTipoConta() {
 
         return tipoConta;
 
     }
-
-
 
     public void setTipoConta(TipoConta tipoConta) {
 
@@ -220,19 +147,11 @@ public class PlanoConta extends Entidade<Integer>
 
     }
 
-
-
-
-
-
-
     public Integer getNivel() {
 
         return nivel;
 
     }
-
-
 
     public void setNivel(Integer nivel) {
 
@@ -240,32 +159,17 @@ public class PlanoConta extends Entidade<Integer>
 
     }
 
-
-
-
-
-
-
     public boolean isAceitaLancamento() {
 
         return aceitaLancamento;
 
     }
 
-
-
-    public void setAceitaLancamento(
-            boolean aceitaLancamento) {
+    public void setAceitaLancamento(boolean aceitaLancamento) {
 
         this.aceitaLancamento = aceitaLancamento;
 
     }
-
-
-
-
-
-
 
     public boolean isAtivo() {
 
@@ -273,19 +177,11 @@ public class PlanoConta extends Entidade<Integer>
 
     }
 
-
-
     public void setAtivo(boolean ativo) {
 
         this.ativo = ativo;
 
     }
-
-
-
-
-
-
 
     public PlanoConta getContaPai() {
 
@@ -293,19 +189,11 @@ public class PlanoConta extends Entidade<Integer>
 
     }
 
-
-
     public void setContaPai(PlanoConta contaPai) {
 
         this.contaPai = contaPai;
 
     }
-
-
-
-
-
-
 
     public List<PlanoConta> getContasFilhas() {
 
@@ -313,47 +201,29 @@ public class PlanoConta extends Entidade<Integer>
 
     }
 
-
-
-
-
-
-
     public BigDecimal getSaldo() {
 
         return saldo;
 
     }
 
-
-
     public void setSaldo(BigDecimal saldo) {
 
-        this.saldo = saldo == null
-
-                ? BigDecimal.ZERO
-
-                : saldo;
+        this.saldo =
+                saldo == null
+                        ? BigDecimal.ZERO
+                        : saldo;
 
     }
 
-
-
-
-
-
-
-    public void adicionarFilha(
-            PlanoConta filha) {
-
+    public void adicionarFilha(PlanoConta filha) {
 
         Objects.requireNonNull(
                 filha,
                 "Conta filha obrigatória"
         );
 
-
-        if(this.equals(filha)) {
+        if (this.equals(filha)) {
 
             throw new IllegalArgumentException(
                     "Uma conta não pode ser filha dela mesma"
@@ -361,39 +231,36 @@ public class PlanoConta extends Entidade<Integer>
 
         }
 
+        if (filha.getContaPai() != null &&
+                filha.getContaPai() != this) {
 
+            throw new IllegalArgumentException(
+                    "Conta já possui outro pai."
+            );
 
-        filha.setContaPai(this);
+        }
 
+        if (!contasFilhas.contains(filha)) {
 
-
-        if(!contasFilhas.contains(filha)) {
+            filha.setContaPai(this);
 
             contasFilhas.add(filha);
+
+            ordenarFilhos();
 
         }
 
     }
 
+    public void removerFilha(PlanoConta filha) {
 
-
-
-
-
-
-    public void removerFilha(
-            PlanoConta filha) {
-
-
-        if(filha == null) {
+        if (filha == null) {
 
             return;
 
         }
 
-
-
-        if(contasFilhas.remove(filha)) {
+        if (contasFilhas.remove(filha)) {
 
             filha.setContaPai(null);
 
@@ -401,23 +268,11 @@ public class PlanoConta extends Entidade<Integer>
 
     }
 
-
-
-
-
-
-
     public boolean possuiFilhos() {
 
         return !contasFilhas.isEmpty();
 
     }
-
-
-
-
-
-
 
     public int quantidadeFilhos() {
 
@@ -425,23 +280,11 @@ public class PlanoConta extends Entidade<Integer>
 
     }
 
-
-
-
-
-
-
     public boolean isAnalitica() {
 
         return tipoConta == TipoConta.ANALITICA;
 
     }
-
-
-
-
-
-
 
     public boolean isSintetica() {
 
@@ -449,37 +292,25 @@ public class PlanoConta extends Entidade<Integer>
 
     }
 
-
-
-
-
-
-
     public void ordenarFilhos() {
-
 
         contasFilhas.sort(
 
                 Comparator.comparing(
+
                         PlanoConta::getCodigo,
+
                         Comparator.nullsLast(
                                 String::compareToIgnoreCase
                         )
+
                 )
 
         );
 
     }
 
-
-
-
-
-
-
-    public PlanoConta localizar(
-            String codigo) {
-
+    public PlanoConta localizar(String codigo) {
 
         return contasFilhas.stream()
 
@@ -498,17 +329,9 @@ public class PlanoConta extends Entidade<Integer>
 
     }
 
+    public PlanoConta localizarRecursivo(String codigo) {
 
-
-
-
-
-
-    public PlanoConta localizarRecursivo(
-            String codigo) {
-
-
-        if(Objects.equals(
+        if (Objects.equals(
                 this.codigo,
                 codigo)) {
 
@@ -516,17 +339,12 @@ public class PlanoConta extends Entidade<Integer>
 
         }
 
-
-
-        for(PlanoConta filha : contasFilhas) {
-
+        for (PlanoConta filha : contasFilhas) {
 
             PlanoConta encontrada =
                     filha.localizarRecursivo(codigo);
 
-
-
-            if(encontrada != null) {
+            if (encontrada != null) {
 
                 return encontrada;
 
@@ -534,27 +352,15 @@ public class PlanoConta extends Entidade<Integer>
 
         }
 
-
-
         return null;
 
     }
 
-
-
-
-
-
-
     public BigDecimal calcularSaldoTotal() {
-
 
         BigDecimal total = saldo;
 
-
-
-        for(PlanoConta filha : contasFilhas) {
-
+        for (PlanoConta filha : contasFilhas) {
 
             total = total.add(
                     filha.calcularSaldoTotal()
@@ -562,56 +368,34 @@ public class PlanoConta extends Entidade<Integer>
 
         }
 
-
-
         return total;
 
     }
 
-
-
-
-
-
-
     public long quantidadeContas() {
 
-
-        return 1 +
+        return 1L +
 
                 contasFilhas.stream()
 
-                .mapToLong(
-                        PlanoConta::quantidadeContas
-                )
+                        .mapToLong(
+                                PlanoConta::quantidadeContas
+                        )
 
-                .sum();
+                        .sum();
 
     }
 
+    public void imprimir(String espacos) {
 
-
-
-
-
-
-    public void imprimir(
-            String espacos) {
-
-
-        System.out.println(
-
-                espacos
-                + codigo
-                + " - "
-                + descricao
-                + " ["
-                + tipoConta
-                + "]"
-
+        System.out.printf(
+                "%s%s - %s [%s] Saldo: R$ %s%n",
+                espacos,
+                codigo,
+                descricao,
+                tipoConta,
+                saldo
         );
-
-
 
         contasFilhas.forEach(
 
@@ -625,67 +409,50 @@ public class PlanoConta extends Entidade<Integer>
 
     }
 
-
-
-
-
-
-
     @Override
-    public int compareTo(
-            PlanoConta outra) {
+    public int compareTo(PlanoConta outra) {
 
-
-        if(outra == null) {
+        if (outra == null) {
 
             return 1;
 
         }
 
-
         return Comparator
+
                 .nullsLast(String::compareToIgnoreCase)
+
                 .compare(
+
                         this.codigo,
+
                         outra.codigo
+
                 );
 
     }
 
-
-
-
-
-
-
     @Override
     public boolean equals(Object obj) {
 
-
-        if(this == obj) {
+        if (this == obj) {
 
             return true;
 
         }
 
-
-
-        if(!(obj instanceof PlanoConta outra)) {
+        if (!(obj instanceof PlanoConta outra)) {
 
             return false;
 
         }
 
-
-
-        if(getId() == null ||
+        if (getId() == null ||
                 outra.getId() == null) {
 
             return false;
 
         }
-
-
 
         return Objects.equals(
                 getId(),
@@ -694,15 +461,8 @@ public class PlanoConta extends Entidade<Integer>
 
     }
 
-
-
-
-
-
-
     @Override
     public int hashCode() {
-
 
         return getId() == null
 
@@ -712,21 +472,13 @@ public class PlanoConta extends Entidade<Integer>
 
     }
 
-
-
-
-
-
-
     @Override
     public String toString() {
 
-
-        return codigo
-                + " - "
-                + descricao;
+        return codigo +
+                " - " +
+                descricao;
 
     }
-
 
 }

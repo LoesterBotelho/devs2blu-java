@@ -3,109 +3,79 @@ package exercicios25072026parte1.contabil.test;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import exercicios25072026parte1.contabil.enums.NaturezaConta;
-import exercicios25072026parte1.contabil.enums.TipoConta;
+import exercicios25072026parte1.contabil.config.ContabilContext;
 import exercicios25072026parte1.contabil.enums.TipoMovimento;
 import exercicios25072026parte1.contabil.model.ItemLancamento;
 import exercicios25072026parte1.contabil.model.LancamentoContabil;
 import exercicios25072026parte1.contabil.model.PlanoConta;
-import exercicios25072026parte1.contabil.repository.LancamentoRepository;
 import exercicios25072026parte1.contabil.service.LancamentoContabilService;
 import exercicios25072026parte1.contabil.service.LivroDiarioService;
 
-
 public class LivroDiarioTest {
-
 
     public static void main(String[] args) {
 
-
-        LancamentoRepository repository =
-                new LancamentoRepository();
-
-
+        ContabilContext context =
+                new ContabilContext();
 
         LancamentoContabilService lancamentoService =
-                new LancamentoContabilService(repository);
+                context.getLancamentoService();
 
-
-
-        LivroDiarioService livro =
-                new LivroDiarioService(lancamentoService);
-
-
+        LivroDiarioService livroDiarioService =
+                context.getLivroDiarioService();
 
         PlanoConta caixa =
-                new PlanoConta(
-                        1,
-                        "1.1.01",
-                        "Caixa",
-                        NaturezaConta.ATIVO,
-                        TipoConta.ANALITICA,
-                        3,
-                        true
-                );
-
-
+                context.getPlanoContaService()
+                        .localizarPorCodigo("1.1.01")
+                        .orElseThrow(() ->
+                                new RuntimeException("Conta Caixa não encontrada"));
 
         PlanoConta banco =
-                new PlanoConta(
-                        2,
-                        "1.1.02",
-                        "Banco",
-                        NaturezaConta.ATIVO,
-                        TipoConta.ANALITICA,
-                        3,
-                        true
-                );
-
-
+                context.getPlanoContaService()
+                        .localizarPorCodigo("1.1.02")
+                        .orElseThrow(() ->
+                                new RuntimeException("Conta Banco não encontrada"));
 
         LancamentoContabil lancamento =
-                new LancamentoContabil(
-                        1,
-                        LocalDate.now(),
-                        "NF001",
-                        "Depósito inicial"
-                );
+                new LancamentoContabil();
 
+        lancamento.setData(LocalDate.now());
+        lancamento.setDocumento("NF001");
+        lancamento.setHistorico("Depósito inicial");
 
+        lancamento.adicionarItem(
 
-        ItemLancamento debito =
                 new ItemLancamento(
-                        1,
+
                         caixa,
-                        null,
                         TipoMovimento.DEBITO,
-                        new BigDecimal("1000.00")
-                );
+                        BigDecimal.valueOf(1000)
 
+                )
 
+        );
 
-        ItemLancamento credito =
+        lancamento.adicionarItem(
+
                 new ItemLancamento(
-                        2,
+
                         banco,
-                        null,
                         TipoMovimento.CREDITO,
-                        new BigDecimal("1000.00")
-                );
+                        BigDecimal.valueOf(1000)
 
+                )
 
-
-        lancamento.adicionarItem(debito);
-
-        lancamento.adicionarItem(credito);
-
-
+        );
 
         lancamentoService.salvar(lancamento);
 
+        System.out.println("=================================");
+        System.out.println("         LIVRO DIÁRIO");
+        System.out.println("=================================");
 
-
-        livro.gerar()
+        livroDiarioService
+                .gerar()
                 .forEach(System.out::println);
-
 
     }
 

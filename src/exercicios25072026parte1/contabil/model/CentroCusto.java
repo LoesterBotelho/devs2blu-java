@@ -1,307 +1,179 @@
 package exercicios25072026parte1.contabil.model;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+
 import java.util.Objects;
 
-import exercicios25072026parte1.contabil.enums.TipoCentroCusto;
 
-public class CentroCusto extends Entidade<Integer> implements Comparable<CentroCusto> {
 
-	private static final long serialVersionUID = 1L;
+public class CentroCusto extends Entidade<Integer> {
 
-    private Integer id;
-	private String codigo;
 
-	private String descricao;
+    private static final long serialVersionUID = 1L;
 
-	private TipoCentroCusto tipo;
 
-	private boolean ativo;
 
-	private CentroCusto pai;
+    private String codigo;
 
-	private final List<CentroCusto> filhos = new ArrayList<>();
 
-	private BigDecimal percentualRateio = BigDecimal.ZERO;
+    private String descricao;
 
-	public CentroCusto() {
 
-	}
+    private boolean ativo;
 
-	public CentroCusto(Integer id, String codigo, String descricao, TipoCentroCusto tipo) {
 
-		setId(id);
 
-		this.codigo = codigo;
-		this.descricao = descricao;
-		this.tipo = tipo;
-		this.ativo = true;
 
-	}
 
-	public String getCodigo() {
 
-		return codigo;
 
-	}
+    public CentroCusto() {
 
-	public void setCodigo(String codigo) {
+    }
 
-		this.codigo = codigo;
 
-	}
 
-	public String getDescricao() {
 
-		return descricao;
 
-	}
 
-	public void setDescricao(String descricao) {
 
-		this.descricao = descricao;
+    public CentroCusto(
+            Integer id,
+            String codigo,
+            String descricao) {
 
-	}
 
-	public TipoCentroCusto getTipo() {
+        setId(id);
 
-		return tipo;
+        this.codigo = codigo;
+        this.descricao = descricao;
+        this.ativo = true;
 
-	}
+    }
 
-	public void setTipo(TipoCentroCusto tipo) {
 
-		this.tipo = tipo;
 
-	}
 
-	public boolean isAtivo() {
 
-		return ativo;
 
-	}
 
-	public void setAtivo(boolean ativo) {
+    public String getCodigo() {
 
-		this.ativo = ativo;
+        return codigo;
 
-	}
+    }
 
-	public CentroCusto getPai() {
 
-		return pai;
 
-	}
+    public void setCodigo(String codigo) {
 
-	public void setPai(CentroCusto pai) {
+        this.codigo = codigo;
 
-		this.pai = pai;
+    }
 
-	}
 
-	public List<CentroCusto> getFilhos() {
 
-		return Collections.unmodifiableList(filhos);
 
-	}
 
-	public BigDecimal getPercentualRateio() {
 
-		return percentualRateio;
 
-	}
+    public String getDescricao() {
 
-	public void setPercentualRateio(BigDecimal percentualRateio) {
+        return descricao;
 
-		this.percentualRateio = percentualRateio == null ? BigDecimal.ZERO : percentualRateio;
+    }
 
-	}
 
-	public void adicionarFilho(CentroCusto filho) {
 
-		Objects.requireNonNull(filho, "Centro custo filho obrigatório");
+    public void setDescricao(String descricao) {
 
-		filho.setPai(this);
+        this.descricao = descricao;
 
-		if (!filhos.contains(filho)) {
+    }
 
-			filhos.add(filho);
 
-		}
 
-	}
 
-	public void removerFilho(CentroCusto filho) {
 
-		if (filho == null) {
 
-			return;
 
-		}
+    public boolean isAtivo() {
 
-		if (filhos.remove(filho)) {
+        return ativo;
 
-			filho.setPai(null);
+    }
 
-		}
 
-	}
 
-	public boolean possuiFilhos() {
+    public void setAtivo(boolean ativo) {
 
-		return !filhos.isEmpty();
+        this.ativo = ativo;
 
-	}
+    }
 
-	public int quantidadeFilhos() {
 
-		return filhos.size();
 
-	}
 
-	public boolean isAnalitico() {
 
-		return tipo == TipoCentroCusto.ANALITICO;
 
-	}
 
-	public boolean isSintetico() {
+    @Override
+    public boolean equals(Object obj) {
 
-		return tipo == TipoCentroCusto.SINTETICO;
 
-	}
+        if(this == obj) {
 
-	public BigDecimal percentualTotalFilhos() {
+            return true;
 
-		return filhos.stream()
+        }
 
-				.map(CentroCusto::getPercentualRateio)
 
-				.reduce(BigDecimal.ZERO, BigDecimal::add);
 
-	}
+        if(!(obj instanceof CentroCusto outro)) {
 
-	public boolean rateioValido() {
+            return false;
 
-		return percentualTotalFilhos()
+        }
 
-				.compareTo(BigDecimal.valueOf(100)) == 0;
 
-	}
 
-	public CentroCusto localizar(String codigo) {
+        return Objects.equals(
+                getId(),
+                outro.getId()
+        );
 
-		return filhos.stream()
+    }
 
-				.filter(
 
-						filho -> Objects.equals(filho.getCodigo(), codigo)
 
-				)
 
-				.findFirst()
 
-				.orElse(null);
 
-	}
 
-	public CentroCusto localizarRecursivo(String codigo) {
+    @Override
+    public int hashCode() {
 
-		if (Objects.equals(this.codigo, codigo)) {
 
-			return this;
+        return Objects.hash(
+                getId()
+        );
 
-		}
+    }
 
-		for (CentroCusto filho : filhos) {
 
-			CentroCusto encontrado = filho.localizarRecursivo(codigo);
 
-			if (encontrado != null) {
 
-				return encontrado;
 
-			}
 
-		}
 
-		return null;
+    @Override
+    public String toString() {
 
-	}
 
-	public void imprimir(String espacos) {
+        return codigo
+                + " - "
+                + descricao;
 
-		System.out.println(
+    }
 
-				espacos + codigo + " - " + descricao + " (" + percentualRateio + "%)"
-
-		);
-
-		filhos.forEach(
-
-				filho ->
-
-				filho.imprimir(espacos + "    ")
-
-		);
-
-	}
-
-	@Override
-	public int compareTo(CentroCusto outro) {
-
-		return this.codigo.compareToIgnoreCase(outro.codigo);
-
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-
-		if (this == obj) {
-
-			return true;
-
-		}
-
-		if (!(obj instanceof CentroCusto outro)) {
-
-			return false;
-
-		}
-
-		return Objects.equals(getId(), outro.getId());
-
-	}
-
-	@Override
-	public int hashCode() {
-
-		return Objects.hash(getId());
-
-	}
-
-	@Override
-	public String toString() {
-
-		return codigo + " - " + descricao;
-
-	}
-
-	@Override
-	public void setId(Integer id) {
-
-		this.id = id;
-
-	}
-
-	@Override
-	public Integer getId() {
-
-		return id;
-
-	}
 
 }

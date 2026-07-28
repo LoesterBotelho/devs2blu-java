@@ -1,373 +1,376 @@
 package exercicios25072026parte1.contabil.service;
 
+
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 import exercicios25072026parte1.contabil.model.PlanoConta;
 import exercicios25072026parte1.contabil.repository.PlanoContaRepository;
 
+
+
 public class PlanoContaService {
 
-	private final PlanoContaRepository repository;
 
-	public PlanoContaService(PlanoContaRepository repository) {
+    private final PlanoContaRepository repository;
 
-		this.repository = repository;
 
-	}
 
-	/*
-	 * =============================== CADASTRO ===============================
-	 */
+    public PlanoContaService(
+            PlanoContaRepository repository) {
 
-	public void cadastrar(PlanoConta conta) {
+        this.repository = repository;
 
-		validar(conta);
+    }
 
-		repository.salvar(conta);
 
-	}
 
-	public void cadastrarTodos(List<PlanoConta> contas) {
 
-		contas.forEach(
 
-				this::cadastrar
 
-		);
 
-	}
+    public void cadastrar(
+            PlanoConta conta) {
 
-	/*
-	 * Compatibilidade
-	 */
 
-	public void salvar(PlanoConta conta) {
+        validar(conta);
 
-		cadastrar(conta);
 
-	}
+        repository.salvar(conta);
 
-	public void salvarTodos(List<PlanoConta> contas) {
+    }
 
-		cadastrarTodos(contas);
 
-	}
 
-	/*
-	 * =============================== BUSCAS ===============================
-	 */
 
-	public Optional<PlanoConta> buscar(Integer id) {
 
-		return repository.buscar(id);
 
-	}
 
-	public Optional<PlanoConta> buscarPorCodigo(String codigo) {
+    public Optional<PlanoConta> buscar(
+            Integer id) {
 
-		return repository.listar()
 
-				.stream()
+        return repository.buscar(id);
 
-				.filter(
+    }
 
-						conta ->
 
-						conta.getCodigo().equals(codigo)
 
-				)
 
-				.findFirst();
 
-	}
 
-	public PlanoConta buscarContaLancamento(String codigo) {
 
-		PlanoConta conta =
+    public List<PlanoConta> listar() {
 
-				buscarPorCodigo(codigo)
 
-						.orElseThrow(
+        return repository.listarOrdenado(
 
-								() -> new RuntimeException(
+                Comparator.comparing(
 
-										"Conta não encontrada: " + codigo
+                        PlanoConta::getCodigo,
 
-								)
+                        Comparator.nullsLast(
+                                String::compareTo
+                        )
 
-						);
+                )
 
-		if (!conta.isAceitaLancamento()) {
+        );
 
-			throw new RuntimeException(
+    }
 
-					"Conta sintética não aceita lançamento: " + conta.getDescricao()
 
-			);
 
-		}
 
-		return conta;
 
-	}
 
-	/*
-	 * =============================== LISTAGEM ===============================
-	 */
 
-	public List<PlanoConta> listar() {
+    public void remover(
+            Integer id) {
 
-		return repository.listar()
 
-				.stream()
+        repository.removerPorId(id);
 
-				.sorted(
+    }
 
-						Comparator.comparing(PlanoConta::getCodigo)
 
-				)
 
-				.toList();
 
-	}
 
-	public List<PlanoConta> listarAnaliticas() {
 
-		return filtrar(
 
-				PlanoConta::isAnalitica
+    public void adicionarFilha(
+            Integer idPai,
+            PlanoConta filha) {
 
-		);
 
-	}
 
-	public List<PlanoConta> listarSinteticas() {
+        PlanoConta pai =
 
-		return filtrar(
+                repository.buscar(idPai)
 
-				PlanoConta::isSintetica
+                .orElseThrow(
 
-		);
+                        () ->
 
-	}
+                        new RuntimeException(
+                                "Conta pai não encontrada: "
+                                + idPai
+                        )
 
-	public List<PlanoConta> filtrar(Predicate<PlanoConta> filtro) {
+                );
 
-		return repository.listar()
 
-				.stream()
 
-				.filter(filtro)
 
-				.toList();
+        if(pai.isAnalitica()) {
 
-	}
 
-	/*
-	 * =============================== HIERARQUIA ===============================
-	 */
+            throw new RuntimeException(
 
-	public void adicionarFilha(Integer idContaPai, PlanoConta filha) {
+                    "Conta analítica não pode possuir contas filhas"
 
-		PlanoConta pai =
+            );
 
-				buscar(idContaPai)
+        }
 
-						.orElseThrow(
 
-								() -> new RuntimeException(
 
-										"Conta pai não encontrada"
 
-								)
 
-						);
+        validar(filha);
 
-		pai.adicionarFilha(filha);
 
-	}
 
-	public void removerFilha(Integer idContaPai, PlanoConta filha) {
+        pai.adicionarFilha(filha);
 
-		PlanoConta pai =
 
-				buscar(idContaPai)
 
-						.orElseThrow(
+        repository.salvar(filha);
 
-								() -> new RuntimeException(
+    }
 
-										"Conta pai não encontrada"
 
-								)
 
-						);
 
-		pai.removerFilha(filha);
 
-	}
 
-	/*
-	 * =============================== ÁRVORE ===============================
-	 */
 
-	public void imprimirArvore() {
+    public Optional<PlanoConta> localizarPorCodigo(
+            String codigo) {
 
-		listar()
 
-				.stream()
+        return repository.listar()
 
-				.filter(
+                .stream()
 
-						conta ->
+                .map(
 
-						conta.getContaPai() == null
+                        conta ->
+                                conta.localizarRecursivo(codigo)
 
-				)
+                )
 
-				.forEach(
+                .filter(
+                        conta -> conta != null
+                )
 
-						conta ->
+                .findFirst();
 
-						imprimirRecursivo(conta, "")
+    }
 
-				);
 
-	}
 
-	private void imprimirRecursivo(PlanoConta conta, String espacos) {
 
-		System.out.println(
 
-				espacos + conta.getCodigo() + " - " + conta.getDescricao()
 
-		);
 
-		conta.getContasFilhas()
+    public BigDecimal saldoTotal(
+            Integer id) {
 
-				.stream()
 
-				.sorted()
+        PlanoConta conta =
 
-				.forEach(
+                repository.buscar(id)
 
-						filha ->
+                .orElseThrow(
 
-						imprimirRecursivo(
+                        () ->
 
-								filha,
+                        new RuntimeException(
+                                "Conta não encontrada: "
+                                + id
+                        )
 
-								espacos + "    "
+                );
 
-						)
 
-				);
 
-	}
+        return conta.calcularSaldoTotal();
 
-	/*
-	 * =============================== ESTATÍSTICAS ===============================
-	 */
+    }
 
-	public long quantidadeContas() {
 
-		return repository.listar()
 
-				.stream()
 
-				.count();
 
-	}
 
-	public long quantidadeAnaliticas() {
 
-		return listarAnaliticas()
+    private void validar(
+            PlanoConta conta) {
 
-				.size();
 
-	}
 
-	public long quantidadeSinteticas() {
+        if(conta == null) {
 
-		return listarSinteticas()
 
-				.size();
+            throw new RuntimeException(
+                    "Plano de conta obrigatório"
+            );
 
-	}
+        }
 
-	/*
-	 * =============================== REMOVER ===============================
-	 */
 
-	public void remover(Integer id) {
 
-		repository.removerPorId(id);
 
-	}
 
-	/*
-	 * =============================== VALIDAÇÕES ===============================
-	 */
 
-	private void validar(PlanoConta conta) {
+        if(conta.getCodigo() == null
+                ||
+           conta.getCodigo().isBlank()) {
 
-		if (conta == null) {
 
-			throw new RuntimeException(
 
-					"Conta obrigatória"
+            throw new RuntimeException(
+                    "Código da conta obrigatório"
+            );
 
-			);
+        }
 
-		}
 
-		if (conta.getCodigo() == null || conta.getCodigo().isBlank()) {
 
-			throw new RuntimeException(
 
-					"Código obrigatório"
 
-			);
 
-		}
+        if(conta.getDescricao() == null
+                ||
+           conta.getDescricao().isBlank()) {
 
-		if (conta.getDescricao() == null || conta.getDescricao().isBlank()) {
 
-			throw new RuntimeException(
 
-					"Descrição obrigatória"
+            throw new RuntimeException(
+                    "Descrição obrigatória"
+            );
 
-			);
+        }
 
-		}
 
-		boolean existe =
 
-				repository.listar()
 
-						.stream()
 
-						.anyMatch(
 
-								c ->
+        boolean existe =
 
-								c.getCodigo().equals(conta.getCodigo())
+                repository.existe(
 
-						);
+                        c ->
 
-		if (existe) {
 
-			throw new RuntimeException(
+                        c.getCodigo()
+                                .equalsIgnoreCase(
+                                        conta.getCodigo()
+                                )
 
-					"Conta já cadastrada: " + conta.getCodigo()
+                        &&
 
-			);
+                        !c.equals(conta)
 
-		}
+                );
 
-	}
 
+
+
+
+
+
+        if(existe) {
+
+
+
+            throw new RuntimeException(
+
+                    "Código de conta já cadastrado: "
+                    + conta.getCodigo()
+
+            );
+
+        }
+
+
+    }
+
+    /**
+     * Imprime a árvore completa do plano de contas
+     */
+    public void imprimirArvore() {
+
+
+        List<PlanoConta> contasRaiz =
+
+                repository.listar()
+
+                        .stream()
+
+                        .filter(
+
+                                conta -> conta.getContaPai() == null
+
+                        )
+
+                        .sorted(
+
+                                Comparator.comparing(
+                                        PlanoConta::getCodigo,
+                                        Comparator.nullsLast(
+                                                String::compareTo
+                                        )
+                                )
+
+                        )
+
+                        .toList();
+
+
+
+
+
+        if(contasRaiz.isEmpty()) {
+
+
+            System.out.println(
+                    "Nenhuma conta cadastrada"
+            );
+
+
+            return;
+
+        }
+
+
+
+
+
+        contasRaiz.forEach(
+
+                conta ->
+
+                        conta.imprimir("")
+
+        );
+
+
+    }
+    
 }

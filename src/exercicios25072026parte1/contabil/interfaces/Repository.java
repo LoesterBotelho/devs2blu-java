@@ -1,5 +1,6 @@
 package exercicios25072026parte1.contabil.interfaces;
 
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -7,51 +8,153 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+
+
 public interface Repository<T, ID> {
 
 
-    void salvar(T entidade);
+
+    /**
+     * Salva ou atualiza uma entidade
+     */
+    void salvar(
+            T entidade
+    );
 
 
-    void salvarTodos(List<T> entidades);
 
 
-    void removerPorId(ID id);
+    /**
+     * Salva várias entidades
+     */
+    void salvarTodos(
+            List<T> entidades
+    );
 
 
-    void remover(T entidade);
 
 
+    /**
+     * Remove pelo identificador
+     */
+    void removerPorId(
+            ID id
+    );
+
+
+
+
+    /**
+     * Remove pela própria entidade
+     */
+    void remover(
+            T entidade
+    );
+
+
+
+
+    /**
+     * Remove todos os registros
+     */
     void limpar();
 
 
-    Optional<T> buscar(ID id);
 
 
+    /**
+     * Busca por ID
+     */
+    Optional<T> buscar(
+            ID id
+    );
+
+
+
+
+    /**
+     * Lista todos
+     */
     List<T> listar();
 
 
-    List<T> listarOrdenado(Comparator<T> comparator);
 
 
-    List<T> filtrar(Predicate<T> predicate);
+    /**
+     * Lista ordenado
+     */
+    List<T> listarOrdenado(
+            Comparator<T> comparator
+    );
 
 
-    Optional<T> primeiro(Predicate<T> predicate);
 
 
-    boolean existe(ID id);
+    /**
+     * Filtra entidades
+     */
+    List<T> filtrar(
+            Predicate<T> predicate
+    );
 
 
-    boolean existe(Predicate<T> predicate);
 
 
+    /**
+     * Primeiro elemento encontrado
+     */
+    Optional<T> primeiro(
+            Predicate<T> predicate
+    );
+
+
+
+
+    /**
+     * Verifica existência por ID
+     */
+    boolean existe(
+            ID id
+    );
+
+
+
+
+    /**
+     * Verifica existência por condição
+     */
+    boolean existe(
+            Predicate<T> predicate
+    );
+
+
+
+
+    /**
+     * Quantidade de registros
+     */
     long quantidade();
 
 
-    void atualizar(ID id, Consumer<T> consumer);
 
 
-    <R> List<R> map(Function<T, R> mapper);
+    /**
+     * Atualização parcial
+     */
+    void atualizar(
+            ID id,
+            Consumer<T> consumer
+    );
+
+
+
+
+    /**
+     * Transformação usando Stream
+     */
+    <R> List<R> map(
+            Function<T,R> mapper
+    );
+
 
 }

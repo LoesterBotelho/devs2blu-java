@@ -15,186 +15,357 @@ import java.util.function.Predicate;
 import exercicios25072026parte1.contabil.interfaces.Identificavel;
 import exercicios25072026parte1.contabil.interfaces.Repository;
 
-public abstract class MemoryRepository<T extends Identificavel<ID>, ID> implements Repository<T, ID> {
 
-	private final List<T> lista = new ArrayList<>();
+public abstract class MemoryRepository<T extends Identificavel<ID>, ID>
+        implements Repository<T, ID> {
 
-	private final Map<ID, T> mapa = new LinkedHashMap<>();
 
-	private final Map<ID, T> mapaOrdenado = new TreeMap<>();
+    private final List<T> lista =
+            new ArrayList<>();
 
-	/**
-	 * Cada repository filho deve implementar geração do ID
-	 */
-	protected abstract ID gerarId();
 
-	@Override
-	public void salvar(T entidade) {
+    private final Map<ID,T> mapa =
+            new LinkedHashMap<>();
 
-		Objects.requireNonNull(entidade, "Entidade não pode ser nula");
 
-		if (entidade.getId() == null) {
+    private final Map<ID,T> mapaOrdenado =
+            new TreeMap<>();
 
-			entidade.setId(gerarId());
 
-		}
 
-		removerPorId(entidade.getId());
+    protected abstract ID gerarId();
 
-		lista.add(entidade);
 
-		mapa.put(entidade.getId(), entidade);
 
-		mapaOrdenado.put(entidade.getId(), entidade);
 
-	}
 
-	@Override
-	public void salvarTodos(List<T> entidades) {
+    @Override
+    public void salvar(T entidade) {
 
-		Objects.requireNonNull(entidades, "Lista não pode ser nula");
 
-		entidades.forEach(this::salvar);
+        Objects.requireNonNull(
+                entidade,
+                "Entidade obrigatória"
+        );
 
-	}
 
-	@Override
-	public void removerPorId(ID id) {
+        if(entidade.getId() == null) {
 
-		if (id == null) {
+            entidade.setId(
+                    gerarId()
+            );
 
-			return;
+        }
 
-		}
 
-		lista.removeIf(
 
-				entidade ->
+        removerPorId(
+                entidade.getId()
+        );
 
-				Objects.equals(entidade.getId(), id)
 
-		);
 
-		mapa.remove(id);
+        lista.add(entidade);
 
-		mapaOrdenado.remove(id);
 
-	}
+        mapa.put(
+                entidade.getId(),
+                entidade
+        );
 
-	@Override
-	public void remover(T entidade) {
 
-		if (entidade == null) {
+        mapaOrdenado.put(
+                entidade.getId(),
+                entidade
+        );
 
-			return;
+    }
 
-		}
 
-		removerPorId(entidade.getId());
 
-	}
 
-	@Override
-	public Optional<T> buscar(ID id) {
 
-		return Optional.ofNullable(mapa.get(id));
 
-	}
 
-	@Override
-	public List<T> listar() {
+    @Override
+    public void salvarTodos(
+            List<T> entidades) {
 
-		return List.copyOf(lista);
 
-	}
+        Objects.requireNonNull(
+                entidades,
+                "Lista obrigatória"
+        );
 
-	@Override
-	public List<T> listarOrdenado(Comparator<T> comparator) {
 
-		return lista.stream()
+        entidades.forEach(
+                this::salvar
+        );
 
-				.sorted(comparator)
+    }
 
-				.toList();
 
-	}
 
-	@Override
-	public List<T> filtrar(Predicate<T> predicate) {
 
-		Objects.requireNonNull(predicate);
 
-		return lista.stream()
 
-				.filter(predicate)
 
-				.toList();
 
-	}
+    @Override
+    public void removerPorId(
+            ID id) {
 
-	@Override
-	public Optional<T> primeiro(Predicate<T> predicate) {
 
-		return lista.stream()
+        if(id == null) {
 
-				.filter(predicate)
+            return;
 
-				.findFirst();
+        }
 
-	}
 
-	@Override
-	public boolean existe(ID id) {
 
-		return mapa.containsKey(id);
+        lista.removeIf(
 
-	}
+                item -> Objects.equals(
+                        item.getId(),
+                        id
+                )
 
-	@Override
-	public boolean existe(Predicate<T> predicate) {
+        );
 
-		return lista.stream()
 
-				.anyMatch(predicate);
+        mapa.remove(id);
 
-	}
 
-	@Override
-	public long quantidade() {
+        mapaOrdenado.remove(id);
 
-		return lista.size();
+    }
 
-	}
 
-	@Override
-	public void atualizar(ID id, Consumer<T> consumer) {
 
-		buscar(id)
 
-				.ifPresent(consumer);
 
-	}
 
-	@Override
-	public <R> List<R> map(Function<T, R> mapper) {
 
-		return lista.stream()
 
-				.map(mapper)
+    @Override
+    public void remover(T entidade) {
 
-				.toList();
 
-	}
+        if(entidade == null) {
 
-	@Override
-	public void limpar() {
+            return;
 
-		lista.clear();
+        }
 
-		mapa.clear();
 
-		mapaOrdenado.clear();
+        removerPorId(
+                entidade.getId()
+        );
 
-	}
+    }
+
+
+
+
+
+
+
+
+    @Override
+    public Optional<T> buscar(ID id) {
+
+
+        return Optional.ofNullable(
+                mapa.get(id)
+        );
+
+    }
+
+
+
+
+
+
+
+
+    @Override
+    public List<T> listar() {
+
+
+        return List.copyOf(
+                lista
+        );
+
+    }
+
+
+
+
+
+
+
+
+    @Override
+    public List<T> listarOrdenado(
+            Comparator<T> comparator) {
+
+
+        return lista.stream()
+
+                .sorted(comparator)
+
+                .toList();
+
+    }
+
+
+
+
+
+
+
+
+    @Override
+    public List<T> filtrar(
+            Predicate<T> predicate) {
+
+
+        return lista.stream()
+
+                .filter(predicate)
+
+                .toList();
+
+    }
+
+
+
+
+
+
+
+
+    @Override
+    public Optional<T> primeiro(
+            Predicate<T> predicate) {
+
+
+        return lista.stream()
+
+                .filter(predicate)
+
+                .findFirst();
+
+    }
+
+
+
+
+
+
+
+
+    @Override
+    public boolean existe(ID id) {
+
+
+        return mapa.containsKey(id);
+
+    }
+
+
+
+
+
+
+
+
+    @Override
+    public boolean existe(
+            Predicate<T> predicate) {
+
+
+        return lista.stream()
+
+                .anyMatch(predicate);
+
+    }
+
+
+
+
+
+
+
+
+    @Override
+    public long quantidade() {
+
+
+        return lista.size();
+
+    }
+
+
+
+
+
+
+
+
+    @Override
+    public void atualizar(
+            ID id,
+            Consumer<T> consumer) {
+
+
+        buscar(id)
+
+                .ifPresent(consumer);
+
+    }
+
+
+
+
+
+
+
+
+    @Override
+    public <R> List<R> map(
+            Function<T,R> mapper) {
+
+
+        return lista.stream()
+
+                .map(mapper)
+
+                .toList();
+
+    }
+
+
+
+
+
+
+
+
+    @Override
+    public void limpar() {
+
+
+        lista.clear();
+
+
+        mapa.clear();
+
+
+        mapaOrdenado.clear();
+
+    }
+
 
 }

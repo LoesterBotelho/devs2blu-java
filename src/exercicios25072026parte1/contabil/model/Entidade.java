@@ -55,6 +55,14 @@ public abstract class Entidade<ID>
 
 
 
+        if(id == null || outra.id == null) {
+
+            return false;
+
+        }
+
+
+
         return Objects.equals(
                 id,
                 outra.id
@@ -67,7 +75,12 @@ public abstract class Entidade<ID>
     @Override
     public int hashCode() {
 
-        return Objects.hash(id);
+
+        return id == null
+
+                ? System.identityHashCode(this)
+
+                : Objects.hash(id);
 
     }
 

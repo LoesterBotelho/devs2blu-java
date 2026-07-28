@@ -1,70 +1,163 @@
 package exercicios25072026parte1.contabil.test;
 
-import java.math.BigDecimal;
 
-import exercicios25072026parte1.contabil.enums.TipoCentroCusto;
 import exercicios25072026parte1.contabil.model.CentroCusto;
 import exercicios25072026parte1.contabil.repository.CentroCustoRepository;
 import exercicios25072026parte1.contabil.service.CentroCustoService;
 
+
+
 public class CentroCustoServiceTest {
 
-	public static void main(String[] args) {
 
-		CentroCustoRepository repository = new CentroCustoRepository();
+    public static void main(String[] args) {
 
-		CentroCustoService service = new CentroCustoService(repository);
 
-		CentroCusto administrativo =
 
-				new CentroCusto(
+        CentroCustoRepository repository =
 
-						1, "10", "Administrativo", TipoCentroCusto.SINTETICO
+                new CentroCustoRepository();
 
-				);
 
-		CentroCusto rh =
 
-				new CentroCusto(
 
-						2, "10.01", "Recursos Humanos", TipoCentroCusto.ANALITICO
 
-				);
+        CentroCustoService service =
 
-		CentroCusto financeiro =
+                new CentroCustoService(repository);
 
-				new CentroCusto(
 
-						3, "10.02", "Financeiro", TipoCentroCusto.ANALITICO
 
-				);
 
-		rh.setPercentualRateio(BigDecimal.valueOf(40));
 
-		financeiro.setPercentualRateio(BigDecimal.valueOf(60));
 
-		service.cadastrar(administrativo);
+        CentroCusto administrativo =
 
-		service.cadastrar(rh);
+                new CentroCusto(
 
-		service.cadastrar(financeiro);
+                        1,
+                        "10",
+                        "Administrativo"
 
-		service.adicionarFilho(1, rh);
+                );
 
-		service.adicionarFilho(1, financeiro);
 
-		administrativo.imprimir("");
 
-		System.out.println();
 
-		System.out.println(
 
-				"Rateio válido: "
 
-						+ administrativo.rateioValido()
+        CentroCusto rh =
 
-		);
+                new CentroCusto(
 
-	}
+                        2,
+                        "10.01",
+                        "Recursos Humanos"
+
+                );
+
+
+
+
+
+
+        CentroCusto financeiro =
+
+                new CentroCusto(
+
+                        3,
+                        "10.02",
+                        "Financeiro"
+
+                );
+
+
+
+
+
+
+
+
+        service.cadastrar(administrativo);
+
+
+        service.cadastrar(rh);
+
+
+        service.cadastrar(financeiro);
+
+
+
+
+
+
+
+        System.out.println(
+                "================================="
+        );
+
+
+        System.out.println(
+                "      CENTRO DE CUSTO"
+        );
+
+
+        System.out.println(
+                "================================="
+        );
+
+
+
+
+
+
+        service.listar()
+
+                .forEach(
+
+                        System.out::println
+
+                );
+
+
+
+
+
+
+        System.out.println();
+
+
+        System.out.println(
+
+                "Quantidade cadastrada: "
+
+                + repository.quantidade()
+
+        );
+
+
+
+
+
+
+        System.out.println();
+
+
+        System.out.println(
+
+                "Buscar ID 1: "
+
+                +
+
+                service.buscar(1)
+
+                        .orElseThrow()
+
+        );
+
+
+
+    }
+
 
 }

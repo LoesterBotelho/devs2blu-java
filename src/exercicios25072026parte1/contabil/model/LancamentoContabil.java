@@ -1,5 +1,6 @@
 package exercicios25072026parte1.contabil.model;
 
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -7,17 +8,25 @@ import java.util.List;
 import java.util.Objects;
 
 
+
 public class LancamentoContabil extends Entidade<Integer> {
+
 
 
     private static final long serialVersionUID = 1L;
 
 
+
     private LocalDate data;
+
+
 
     private String documento;
 
+
+
     private String historico;
+
 
 
     private final List<ItemLancamento> itens =
@@ -25,9 +34,14 @@ public class LancamentoContabil extends Entidade<Integer> {
 
 
 
+
+
     public LancamentoContabil() {
 
     }
+
+
+
 
 
 
@@ -44,8 +58,9 @@ public class LancamentoContabil extends Entidade<Integer> {
         this.documento = documento;
         this.historico = historico;
 
-
     }
+
+
 
 
 
@@ -69,6 +84,8 @@ public class LancamentoContabil extends Entidade<Integer> {
 
 
 
+
+
     public String getDocumento() {
 
         return documento;
@@ -82,6 +99,8 @@ public class LancamentoContabil extends Entidade<Integer> {
         this.documento = documento;
 
     }
+
+
 
 
 
@@ -105,11 +124,16 @@ public class LancamentoContabil extends Entidade<Integer> {
 
 
 
+
+
     public List<ItemLancamento> getItens() {
 
-        return itens;
+
+        return List.copyOf(itens);
 
     }
+
+
 
 
 
@@ -119,16 +143,46 @@ public class LancamentoContabil extends Entidade<Integer> {
             ItemLancamento item) {
 
 
+
         Objects.requireNonNull(
                 item,
-                "Item obrigatório"
+                "Item de lançamento obrigatório"
         );
+
 
 
         itens.add(item);
 
+    }
+
+
+
+
+
+
+
+    public void removerItem(
+            ItemLancamento item) {
+
+
+        itens.remove(item);
 
     }
+
+
+
+
+
+
+
+    public boolean possuiItens() {
+
+
+        return !itens.isEmpty();
+
+    }
+
+
 
 
 
@@ -143,13 +197,16 @@ public class LancamentoContabil extends Entidade<Integer> {
 
                 .map(ItemLancamento::getValor)
 
+                .filter(Objects::nonNull)
+
                 .reduce(
                         BigDecimal.ZERO,
                         BigDecimal::add
                 );
 
-
     }
+
+
 
 
 
@@ -164,13 +221,16 @@ public class LancamentoContabil extends Entidade<Integer> {
 
                 .map(ItemLancamento::getValor)
 
+                .filter(Objects::nonNull)
+
                 .reduce(
                         BigDecimal.ZERO,
                         BigDecimal::add
                 );
 
-
     }
+
+
 
 
 
@@ -181,12 +241,46 @@ public class LancamentoContabil extends Entidade<Integer> {
 
         return totalDebito()
 
-                .compareTo(totalCredito())
+                .compareTo(
+                        totalCredito()
+                )
 
                 == 0;
 
+    }
+
+
+
+
+
+
+
+    public boolean validar() {
+
+
+        if(data == null) {
+
+            return false;
+
+        }
+
+
+        if(itens.isEmpty()) {
+
+            return false;
+
+        }
+
+
+        return itens.stream()
+
+                .allMatch(
+                        ItemLancamento::valido
+                );
 
     }
+
+
 
 
 
@@ -195,55 +289,92 @@ public class LancamentoContabil extends Entidade<Integer> {
     public void imprimir() {
 
 
+
+        System.out.println("--------------------------------");
+
         System.out.println(
-                data
-                + " - "
+                "Data......: "
+                + data
+        );
+
+
+        System.out.println(
+                "Documento.: "
                 + documento
-                + " - "
+        );
+
+
+        System.out.println(
+                "Histórico.: "
                 + historico
         );
+
+
+        System.out.println("--------------------------------");
+
 
 
         itens.forEach(
 
                 item ->
-
-                    System.out.println(
-                            "   " + item
-                    )
+                        System.out.println(
+                                "   "
+                                + item
+                        )
 
         );
 
 
+
+        System.out.println("--------------------------------");
+
+
+
         System.out.println(
-                "Débito: "
+                "Débito....: R$ "
                 + totalDebito()
         );
 
 
+
         System.out.println(
-                "Crédito: "
+                "Crédito...: R$ "
                 + totalCredito()
         );
 
+
+
+        System.out.println(
+                "Válido....: "
+                + partidaDobradaValida()
+        );
+
+
+        System.out.println("--------------------------------");
 
     }
 
 
 
-	@Override
-	public void setId(Integer id) {
-		// TODO Auto-generated method stub
-		
-	}
 
 
 
-	@Override
-	public Integer getId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
+    @Override
+    public String toString() {
+
+
+        return data
+                + " | "
+                + documento
+                + " | "
+                + historico
+                + " | Débito R$ "
+                + totalDebito()
+                + " | Crédito R$ "
+                + totalCredito();
+
+    }
 
 
 

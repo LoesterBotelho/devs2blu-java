@@ -1,6 +1,6 @@
 package exercicios25072026parte1.contabil.service;
 
-import java.math.BigDecimal;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -8,202 +8,237 @@ import java.util.Optional;
 import exercicios25072026parte1.contabil.model.CentroCusto;
 import exercicios25072026parte1.contabil.repository.CentroCustoRepository;
 
+
+
 public class CentroCustoService {
 
-	private final CentroCustoRepository repository;
 
-	public CentroCustoService(CentroCustoRepository repository) {
+    private final CentroCustoRepository repository;
 
-		this.repository = repository;
 
-	}
 
-	public void cadastrar(CentroCusto centro) {
 
-		validar(centro);
+    public CentroCustoService(
+            CentroCustoRepository repository) {
 
-		validarCodigoDuplicado(centro.getCodigo());
+        this.repository = repository;
 
-		repository.salvar(centro);
+    }
 
-	}
 
-	public Optional<CentroCusto> buscarPorId(Integer id) {
 
-		return repository.buscar(id);
 
-	}
 
-	public Optional<CentroCusto> buscarPorCodigo(String codigo) {
 
-		return repository.primeiro(
 
-				centro ->
+    public void cadastrar(
+            CentroCusto centroCusto) {
 
-				centro.getCodigo().equals(codigo)
 
-		);
+        validar(centroCusto);
 
-	}
 
-	public List<CentroCusto> pesquisar(String texto) {
+        repository.salvar(centroCusto);
 
-		return repository.filtrar(
+    }
 
-				centro ->
 
-				centro.getDescricao().toLowerCase().contains(texto.toLowerCase())
 
-		);
 
-	}
 
-	public List<CentroCusto> listar() {
 
-		return repository.listarOrdenado(
 
-				Comparator.comparing(CentroCusto::getCodigo)
+    public Optional<CentroCusto> buscar(
+            Integer id) {
 
-		);
 
-	}
+        return repository.buscar(id);
 
-	public List<CentroCusto> listarAtivos() {
+    }
 
-		return repository.filtrar(
 
-				CentroCusto::isAtivo
 
-		);
 
-	}
 
-	public void adicionarFilho(Integer idPai, CentroCusto filho) {
 
-		CentroCusto pai =
 
-				repository.buscar(idPai)
+    public List<CentroCusto> listar() {
 
-						.orElseThrow(
 
-								() -> new RuntimeException("Centro pai não encontrado")
+        return repository.listarOrdenado(
 
-						);
+                Comparator.comparing(
 
-		pai.adicionarFilho(filho);
+                        CentroCusto::getCodigo,
 
-	}
+                        Comparator.nullsLast(
+                                String::compareToIgnoreCase
+                        )
 
-	public void alterarSituacao(Integer id) {
+                )
 
-		repository.atualizar(
+        );
 
-				id,
+    }
 
-				centro ->
 
-				centro.setAtivo(!centro.isAtivo())
 
-		);
 
-	}
 
-	public void remover(Integer id) {
 
-		CentroCusto centro =
 
-				repository.buscar(id)
+    public Optional<CentroCusto> buscarPorCodigo(
+            String codigo) {
 
-						.orElseThrow(
 
-								() -> new RuntimeException("Centro não encontrado")
+        return repository.listar()
 
-						);
+                .stream()
 
-		if (centro.possuiFilhos()) {
+                .filter(
 
-			throw new RuntimeException(
+                        centro ->
 
-					"Centro possui filhos"
+                        centro.getCodigo()
+                                .equalsIgnoreCase(codigo)
 
-			);
+                )
 
-		}
+                .findFirst();
 
-		repository.removerPorId(id);
+    }
 
-	}
 
-	public boolean validarRateio(Integer id) {
 
-		CentroCusto centro =
 
-				repository.buscar(id)
 
-						.orElseThrow();
 
-		return centro.rateioValido();
 
-	}
+    public void remover(
+            Integer id) {
 
-	public void alterarPercentual(Integer id, BigDecimal percentual) {
 
-		repository.atualizar(
+        repository.removerPorId(id);
 
-				id,
+    }
 
-				centro ->
 
-				centro.setPercentualRateio(percentual)
 
-		);
 
-	}
 
-	private void validar(CentroCusto centro) {
 
-		if (centro == null) {
 
-			throw new RuntimeException("Centro obrigatório");
+    public long quantidade() {
 
-		}
 
-		if (centro.getCodigo() == null || centro.getCodigo().isBlank()) {
+        return repository.quantidade();
 
-			throw new RuntimeException("Código obrigatório");
+    }
 
-		}
 
-		if (centro.getDescricao() == null || centro.getDescricao().isBlank()) {
 
-			throw new RuntimeException("Descrição obrigatória");
 
-		}
 
-	}
 
-	private void validarCodigoDuplicado(String codigo) {
 
-		boolean existe =
+    private void validar(
+            CentroCusto centroCusto) {
 
-				repository.existe(
 
-						centro ->
 
-						centro.getCodigo().equals(codigo)
+        if(centroCusto == null) {
 
-				);
 
-		if (existe) {
+            throw new RuntimeException(
 
-			throw new RuntimeException(
+                    "Centro de custo obrigatório"
 
-					"Código já cadastrado: " + codigo
+            );
 
-			);
+        }
 
-		}
 
-	}
+
+
+
+
+
+        if(centroCusto.getCodigo() == null
+                ||
+           centroCusto.getCodigo().isBlank()) {
+
+
+            throw new RuntimeException(
+
+                    "Código do centro de custo obrigatório"
+
+            );
+
+        }
+
+
+
+
+
+
+
+        if(centroCusto.getDescricao() == null
+                ||
+           centroCusto.getDescricao().isBlank()) {
+
+
+            throw new RuntimeException(
+
+                    "Descrição do centro de custo obrigatória"
+
+            );
+
+        }
+
+
+
+
+
+
+
+        boolean existe =
+
+                repository.existe(
+
+                        c ->
+
+
+                        c.getCodigo()
+                                .equalsIgnoreCase(
+                                        centroCusto.getCodigo()
+                                )
+
+                        &&
+
+                        !c.equals(centroCusto)
+
+                );
+
+
+
+
+
+
+
+        if(existe) {
+
+
+            throw new RuntimeException(
+
+                    "Centro de custo já cadastrado: "
+                    + centroCusto.getCodigo()
+
+            );
+
+        }
+
+
+    }
+
 
 }

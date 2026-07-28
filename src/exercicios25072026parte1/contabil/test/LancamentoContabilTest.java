@@ -21,6 +21,7 @@ public class LancamentoContabilTest {
 
 
         ContabilContext context =
+
                 new ContabilContext();
 
 
@@ -31,9 +32,18 @@ public class LancamentoContabilTest {
 
                 context.getPlanoContaService()
 
-                        .buscarPorCodigo("1.1.01")
+                        .localizarPorCodigo("1.1.01")
 
-                        .orElseThrow();
+                        .orElseThrow(
+
+                                () ->
+
+                                new RuntimeException(
+                                        "Conta Caixa não encontrada"
+                                )
+
+                        );
+
 
 
 
@@ -43,9 +53,19 @@ public class LancamentoContabilTest {
 
                 context.getPlanoContaService()
 
-                        .buscarPorCodigo("3.1.01")
+                        .localizarPorCodigo("3.1.01")
 
-                        .orElseThrow();
+                        .orElseThrow(
+
+                                () ->
+
+                                new RuntimeException(
+                                        "Conta Capital não encontrada"
+                                )
+
+                        );
+
+
 
 
 
@@ -60,9 +80,20 @@ public class LancamentoContabilTest {
 
 
 
-
         lancamento.setData(
+
                 LocalDate.now()
+
+        );
+
+
+
+
+
+        lancamento.setDocumento(
+
+                "CAP001"
+
         );
 
 
@@ -70,8 +101,11 @@ public class LancamentoContabilTest {
 
 
         lancamento.setHistorico(
+
                 "Integralização de capital"
+
         );
+
 
 
 
@@ -93,6 +127,7 @@ public class LancamentoContabilTest {
                 )
 
         );
+
 
 
 
@@ -133,7 +168,17 @@ public class LancamentoContabilTest {
 
 
         System.out.println(
-                "Lançamento salvo"
+                "================================"
+        );
+
+
+        System.out.println(
+                " Lançamento Contábil"
+        );
+
+
+        System.out.println(
+                "================================"
         );
 
 
@@ -141,9 +186,11 @@ public class LancamentoContabilTest {
 
 
         System.out.println(
-                "Caixa: "
-                +
-                caixa.getSaldo()
+
+                "Débito total: R$ "
+
+                + lancamento.totalDebito()
+
         );
 
 
@@ -151,9 +198,11 @@ public class LancamentoContabilTest {
 
 
         System.out.println(
-                "Capital: "
-                +
-                capital.getSaldo()
+
+                "Crédito total: R$ "
+
+                + lancamento.totalCredito()
+
         );
 
 
@@ -161,30 +210,43 @@ public class LancamentoContabilTest {
 
 
         System.out.println(
-                "Débitos: "
-                +
-                lancamento.totalDebito()
-        );
 
-
-
-
-
-        System.out.println(
-                "Créditos: "
-                +
-                lancamento.totalCredito()
-        );
-
-
-
-
-
-        System.out.println(
                 "Partida dobrada válida: "
-                +
-                lancamento.partidaDobradaValida()
+
+                + lancamento.partidaDobradaValida()
+
         );
+
+
+
+
+
+        System.out.println();
+
+
+
+
+
+        System.out.println(
+
+                "Saldo Caixa: R$ "
+
+                + caixa.getSaldo()
+
+        );
+
+
+
+
+
+        System.out.println(
+
+                "Saldo Capital: R$ "
+
+                + capital.getSaldo()
+
+        );
+
 
 
     }

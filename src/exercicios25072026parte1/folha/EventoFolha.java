@@ -1,4 +1,4 @@
-package exercicios25072026parte1.Folha;
+package exercicios25072026parte1.folha;
 
 public class EventoFolha {
 

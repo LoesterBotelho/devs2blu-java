@@ -17,7 +17,7 @@ public class BalanceteTest {
 
 		System.out.println();
 
-		System.out.println("Balanceado: " + balancete.estaBalanceado());
+		System.out.println("Balanceado: " + balancete.partidaDobradaOk());
 
 	}
 

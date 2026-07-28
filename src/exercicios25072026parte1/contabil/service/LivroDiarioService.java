@@ -1,94 +1,217 @@
 package exercicios25072026parte1.contabil.service;
 
+
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
-import exercicios25072026parte1.contabil.model.ItemLancamento;
+import exercicios25072026parte1.contabil.enums.StatusLancamento;
 import exercicios25072026parte1.contabil.model.LancamentoContabil;
 import exercicios25072026parte1.contabil.relatorio.LivroDiarioRelatorio;
 
+
+
 public class LivroDiarioService {
 
-	private final LancamentoContabilService service;
 
-	public LivroDiarioService(LancamentoContabilService service) {
+    private final LancamentoContabilService lancamentoService;
 
-		this.service = service;
 
-	}
 
-	public List<LivroDiarioRelatorio> gerar() {
 
-		return service.listar()
+    public LivroDiarioService(
+            LancamentoContabilService lancamentoService) {
 
-				.stream()
+        this.lancamentoService =
+                lancamentoService;
 
-				.flatMap(
+    }
 
-						lancamento ->
 
-						lancamento.getItens()
 
-								.stream()
 
-								.map(
 
-										item -> converter(lancamento, item)
 
-								)
 
-				)
 
-				.sorted(
+    /**
+     * Gera Livro Diário completo.
+     */
+    public List<LivroDiarioRelatorio> gerar() {
 
-						Comparator.comparing(LivroDiarioRelatorio::getData)
 
-				)
+        return lancamentoService.listar()
 
-				.collect(Collectors.toList());
+                .stream()
 
-	}
+                .filter(
 
-	public List<LivroDiarioRelatorio> gerarPeriodo(LocalDate inicio, LocalDate fim) {
+                        lancamento ->
 
-		return gerar()
+                        lancamento.getStatus()
+                                ==
+                        StatusLancamento.POSTADO
 
-				.stream()
+                )
 
-				.filter(
+                .map(
 
-						linha ->
+                        this::converter
 
-						!linha.getData().isBefore(inicio)
+                )
 
-								&& !linha.getData().isAfter(fim)
+                .sorted(
 
-				)
+                        Comparator.comparing(
 
-				.toList();
+                                LivroDiarioRelatorio::getData
 
-	}
+                        )
 
-	private LivroDiarioRelatorio converter(LancamentoContabil lancamento, ItemLancamento item) {
+                )
 
-		return new LivroDiarioRelatorio(
+                .toList();
 
-				lancamento.getData(),
+    }
 
-				lancamento.getDocumento(),
 
-				lancamento.getHistorico(),
 
-				item.getConta().toString(),
 
-				item.getMovimento(),
 
-				item.getValor()
 
-		);
 
-	}
+
+
+    /**
+     * Livro Diário por período.
+     */
+    public List<LivroDiarioRelatorio> gerarPeriodo(
+
+            LocalDate inicio,
+
+            LocalDate fim
+
+    ) {
+
+
+        Objects.requireNonNull(
+                inicio,
+                "Data inicial obrigatória"
+        );
+
+
+        Objects.requireNonNull(
+                fim,
+                "Data final obrigatória"
+        );
+
+
+
+        return gerar()
+
+                .stream()
+
+                .filter(
+
+                        rel ->
+
+                        !rel.getData()
+                                .isBefore(inicio)
+
+                        &&
+
+                        !rel.getData()
+                                .isAfter(fim)
+
+                )
+
+                .toList();
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Gera um lançamento específico.
+     */
+    public LivroDiarioRelatorio gerarLancamento(
+            Integer id) {
+
+
+        LancamentoContabil lancamento =
+
+                lancamentoService.buscar(id)
+
+                .orElseThrow(
+
+                        () -> new RuntimeException(
+
+                                "Lançamento não encontrado: "
+                                        + id
+
+                        )
+
+                );
+
+
+
+        if(lancamento.getStatus()
+                != StatusLancamento.POSTADO) {
+
+
+            throw new IllegalStateException(
+
+                    "Somente lançamentos postados aparecem no Livro Diário"
+
+            );
+
+        }
+
+
+
+        return converter(
+                lancamento
+        );
+
+    }
+
+
+
+
+
+
+
+
+
+    private LivroDiarioRelatorio converter(
+
+            LancamentoContabil lancamento
+
+    ) {
+
+
+        return new LivroDiarioRelatorio(
+
+                lancamento.getData(),
+
+                lancamento.getDocumento(),
+
+                lancamento.getHistorico(),
+
+                lancamento.getItens()
+
+        );
+
+    }
+
 
 }

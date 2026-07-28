@@ -2,82 +2,255 @@ package exercicios25072026parte1.contabil.relatorio;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
+import exercicios25072026parte1.contabil.model.ItemLancamento;
 import exercicios25072026parte1.contabil.enums.TipoMovimento;
+
 
 public class LivroDiarioRelatorio {
 
-	private LocalDate data;
 
-	private String documento;
+    private final LocalDate data;
 
-	private String historico;
+    private final String documento;
 
-	private String conta;
+    private final String historico;
 
-	private TipoMovimento movimento;
+    private final List<ItemLancamento> itens;
 
-	private BigDecimal valor;
 
-	public LivroDiarioRelatorio(LocalDate data, String documento, String historico, String conta,
-			TipoMovimento movimento, BigDecimal valor) {
 
-		this.data = data;
-		this.documento = documento;
-		this.historico = historico;
-		this.conta = conta;
-		this.movimento = movimento;
-		this.valor = valor;
 
-	}
 
-	public LocalDate getData() {
+    public LivroDiarioRelatorio(
 
-		return data;
+            LocalDate data,
 
-	}
+            String documento,
 
-	public String getDocumento() {
+            String historico,
 
-		return documento;
+            List<ItemLancamento> itens
 
-	}
+    ) {
 
-	public String getHistorico() {
+        this.data = data;
+        this.documento = documento;
+        this.historico = historico;
+        this.itens = itens;
 
-		return historico;
+    }
 
-	}
 
-	public String getConta() {
 
-		return conta;
 
-	}
 
-	public TipoMovimento getMovimento() {
 
-		return movimento;
+    public LocalDate getData() {
 
-	}
+        return data;
 
-	public BigDecimal getValor() {
+    }
 
-		return valor;
 
-	}
 
-	@Override
-	public String toString() {
+    public String getDocumento() {
 
-		return String.format(
+        return documento;
 
-				"%s | %-10s | %-20s | %-30s | %-8s | R$ %s",
+    }
 
-				data, documento, historico, conta, movimento, valor
 
-		);
 
-	}
+    public String getHistorico() {
+
+        return historico;
+
+    }
+
+
+
+    public List<ItemLancamento> getItens() {
+
+        return itens;
+
+    }
+
+
+
+
+
+
+
+    public BigDecimal totalDebito() {
+
+
+        return itens.stream()
+
+                .filter(ItemLancamento::isDebito)
+
+                .map(ItemLancamento::getValor)
+
+                .reduce(
+                        BigDecimal.ZERO,
+                        BigDecimal::add
+                );
+
+    }
+
+
+
+
+
+
+
+    public BigDecimal totalCredito() {
+
+
+        return itens.stream()
+
+                .filter(ItemLancamento::isCredito)
+
+                .map(ItemLancamento::getValor)
+
+                .reduce(
+                        BigDecimal.ZERO,
+                        BigDecimal::add
+                );
+
+    }
+
+
+
+
+
+
+
+    public boolean partidaDobradaOk() {
+
+
+        return totalDebito()
+
+                .compareTo(
+                        totalCredito()
+                )
+
+                == 0;
+
+    }
+
+
+
+
+
+
+
+
+    @Override
+    public String toString() {
+
+
+        StringBuilder sb = new StringBuilder();
+
+
+
+        sb.append("\n");
+        sb.append("========================================\n");
+        sb.append("             LIVRO DIÁRIO\n");
+        sb.append("========================================\n");
+
+        sb.append("Data: ")
+                .append(data)
+                .append("\n");
+
+
+        sb.append("Documento: ")
+                .append(documento)
+                .append("\n");
+
+
+        sb.append("Histórico: ")
+                .append(historico)
+                .append("\n\n");
+
+
+
+        itens.forEach(item -> {
+
+
+            String tipo =
+
+                    item.getMovimento()
+                            == TipoMovimento.DEBITO
+
+                            ?
+
+                            "D"
+
+                            :
+
+                            "C";
+
+
+
+            sb.append(tipo)
+                    .append(" - ")
+                    .append(item.getConta().getCodigo())
+                    .append(" ")
+                    .append(item.getConta().getDescricao())
+
+                    .append("  R$ ")
+
+                    .append(item.getValor())
+
+                    .append("\n");
+
+
+        });
+
+
+
+        sb.append("\n");
+
+        sb.append("Débito:  R$ ")
+                .append(totalDebito())
+                .append("\n");
+
+
+        sb.append("Crédito: R$ ")
+                .append(totalCredito())
+                .append("\n");
+
+
+
+        sb.append("\nPartida dobrada: ")
+
+
+                .append(
+
+                        partidaDobradaOk()
+
+                                ?
+
+                                "OK"
+
+                                :
+
+                                "ERRO"
+
+                );
+
+
+        sb.append("\n");
+
+        sb.append("========================================\n");
+
+
+
+        return sb.toString();
+
+    }
+
 
 }

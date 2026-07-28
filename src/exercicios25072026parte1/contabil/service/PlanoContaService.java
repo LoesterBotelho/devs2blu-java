@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+
 import exercicios25072026parte1.contabil.model.PlanoConta;
 import exercicios25072026parte1.contabil.repository.PlanoContaRepository;
 
@@ -14,7 +15,10 @@ import exercicios25072026parte1.contabil.repository.PlanoContaRepository;
 public class PlanoContaService {
 
 
+
     private final PlanoContaRepository repository;
+
+
 
 
 
@@ -30,6 +34,10 @@ public class PlanoContaService {
 
 
 
+
+    /**
+     * Cadastra uma conta no plano de contas
+     */
     public void cadastrar(
             PlanoConta conta) {
 
@@ -47,6 +55,10 @@ public class PlanoContaService {
 
 
 
+
+    /**
+     * Cadastro em lote
+     */
     public void cadastrarTodos(
             List<PlanoConta> contas) {
 
@@ -58,9 +70,11 @@ public class PlanoContaService {
         }
 
 
+
         contas.forEach(
                 this::cadastrar
         );
+
 
     }
 
@@ -70,6 +84,11 @@ public class PlanoContaService {
 
 
 
+
+
+    /**
+     * Busca por ID
+     */
     public Optional<PlanoConta> buscar(
             Integer id) {
 
@@ -85,8 +104,20 @@ public class PlanoContaService {
 
 
 
+    /**
+     * Busca pelo código contábil
+     */
     public Optional<PlanoConta> buscarPorCodigo(
             String codigo) {
+
+
+
+        if(codigo == null || codigo.isBlank()) {
+
+            return Optional.empty();
+
+        }
+
 
 
         return repository.listar()
@@ -97,12 +128,9 @@ public class PlanoContaService {
 
                         conta ->
 
-                        conta.getCodigo() != null
-
-                        &&
-
-                        conta.getCodigo()
-                                .equalsIgnoreCase(codigo)
+                        codigo.equalsIgnoreCase(
+                                conta.getCodigo()
+                        )
 
                 )
 
@@ -116,11 +144,14 @@ public class PlanoContaService {
 
 
 
+
+    /**
+     * Lista todas ordenadas
+     */
     public List<PlanoConta> listar() {
 
 
         return repository.listarOrdenado(
-
 
                 Comparator.comparing(
 
@@ -142,11 +173,27 @@ public class PlanoContaService {
 
 
 
-    public void remover(
-            Integer id) {
+
+    /**
+     * Lista somente contas analíticas
+     */
+    public List<PlanoConta> listarAnaliticas() {
 
 
-        repository.removerPorId(id);
+        return repository.listar()
+
+                .stream()
+
+                .filter(
+                        PlanoConta::isAnalitica
+                )
+
+                .sorted(
+                        Comparator.naturalOrder()
+                )
+
+                .toList();
+
 
     }
 
@@ -156,32 +203,102 @@ public class PlanoContaService {
 
 
 
+
+
+    /**
+     * Lista somente contas sintéticas
+     */
+    public List<PlanoConta> listarSinteticas() {
+
+
+        return repository.listar()
+
+                .stream()
+
+                .filter(
+                        PlanoConta::isSintetica
+                )
+
+                .sorted(
+                        Comparator.naturalOrder()
+                )
+
+                .toList();
+
+
+    }
+
+
+
+
+
+
+
+
+
+    /**
+     * Lista contas raiz
+     */
+    public List<PlanoConta> listarRaizes() {
+
+
+        return repository.listar()
+
+                .stream()
+
+                .filter(
+
+                        conta ->
+
+                        conta.getContaPai() == null
+
+                )
+
+                .sorted(
+                        Comparator.naturalOrder()
+                )
+
+                .toList();
+
+
+    }
+
+
+
+
+
+
+
+
+
+    /**
+     * Adiciona uma conta filha
+     */
     public void adicionarFilha(
+
             Integer idPai,
+
             PlanoConta filha) {
 
 
 
         PlanoConta pai =
 
-
-                repository.buscar(idPai)
+                buscar(idPai)
 
                 .orElseThrow(
-
 
                         () ->
 
                         new RuntimeException(
 
                                 "Conta pai não encontrada: "
-
                                 + idPai
 
                         )
 
-
                 );
+
 
 
 
@@ -201,15 +318,21 @@ public class PlanoContaService {
 
 
 
+
         validar(filha);
 
 
 
-        pai.adicionarFilha(filha);
+
+        pai.adicionarFilha(
+                filha
+        );
 
 
 
-        repository.salvar(filha);
+        repository.salvar(
+                filha
+        );
 
 
     }
@@ -220,7 +343,168 @@ public class PlanoContaService {
 
 
 
+
+
+    /**
+     * Remove conta
+     */
+    public void remover(
+            Integer id) {
+
+
+
+        PlanoConta conta =
+
+                buscar(id)
+
+                .orElseThrow(
+
+                        () ->
+
+                        new RuntimeException(
+
+                                "Conta não encontrada: "
+                                + id
+
+                        )
+
+                );
+
+
+
+
+
+        if(conta.possuiFilhos()) {
+
+
+            throw new RuntimeException(
+
+                    "Não é permitido remover conta com filhos"
+
+            );
+
+        }
+
+
+
+
+
+        if(conta.getContaPai() != null) {
+
+
+            conta.getContaPai()
+
+                    .removerFilha(conta);
+
+        }
+
+
+
+
+
+        repository.removerPorId(id);
+
+
+    }
+
+
+
+
+
+
+
+
+
+    /**
+     * Ativa conta
+     */
+    public void ativar(
+            Integer id) {
+
+
+        PlanoConta conta = buscar(id)
+
+                .orElseThrow(
+
+                        () ->
+
+                        new RuntimeException(
+                                "Conta não encontrada"
+                        )
+
+                );
+
+
+        conta.setAtivo(true);
+
+
+    }
+
+
+
+
+
+
+
+
+
+    /**
+     * Desativa conta
+     */
+    public void desativar(
+            Integer id) {
+
+
+
+        PlanoConta conta = buscar(id)
+
+                .orElseThrow(
+
+                        () ->
+
+                        new RuntimeException(
+                                "Conta não encontrada"
+                        )
+
+                );
+
+
+
+
+
+        if(conta.possuiFilhos()) {
+
+
+            throw new RuntimeException(
+
+                    "Conta com filhos não pode ser desativada"
+
+            );
+
+        }
+
+
+
+
+
+        conta.setAtivo(false);
+
+
+    }
+
+
+
+
+
+
+
+
+
+    /**
+     * Localização recursiva na árvore
+     */
     public Optional<PlanoConta> localizarPorCodigo(
+
             String codigo) {
 
 
@@ -238,12 +522,11 @@ public class PlanoContaService {
                 )
 
                 .filter(
-
                         conta -> conta != null
-
                 )
 
                 .findFirst();
+
 
     }
 
@@ -253,6 +536,11 @@ public class PlanoContaService {
 
 
 
+
+
+    /**
+     * Saldo total incluindo filhos
+     */
     public BigDecimal saldoTotal(
             Integer id) {
 
@@ -260,28 +548,25 @@ public class PlanoContaService {
 
         PlanoConta conta =
 
-
-                repository.buscar(id)
+                buscar(id)
 
                 .orElseThrow(
-
 
                         () ->
 
                         new RuntimeException(
 
                                 "Conta não encontrada: "
-
                                 + id
 
                         )
-
 
                 );
 
 
 
         return conta.calcularSaldoTotal();
+
 
     }
 
@@ -292,6 +577,28 @@ public class PlanoContaService {
 
 
 
+
+    /**
+     * Quantidade de contas cadastradas
+     */
+    public long quantidade() {
+
+
+        return repository.quantidade();
+
+    }
+
+
+
+
+
+
+
+
+
+    /**
+     * Validação da conta
+     */
     private void validar(
             PlanoConta conta) {
 
@@ -315,9 +622,7 @@ public class PlanoContaService {
 
 
         if(conta.getCodigo() == null
-
                 ||
-
            conta.getCodigo().isBlank()) {
 
 
@@ -337,9 +642,7 @@ public class PlanoContaService {
 
 
         if(conta.getDescricao() == null
-
                 ||
-
            conta.getDescricao().isBlank()) {
 
 
@@ -360,10 +663,7 @@ public class PlanoContaService {
 
         boolean existe =
 
-
                 repository.existe(
-
-
 
                         c ->
 
@@ -381,10 +681,7 @@ public class PlanoContaService {
 
                         !c.equals(conta)
 
-
-
                 );
-
 
 
 
@@ -396,11 +693,43 @@ public class PlanoContaService {
 
             throw new RuntimeException(
 
-
-                    "Código de conta já cadastrado: "
-
+                    "Código já cadastrado: "
                     + conta.getCodigo()
 
+            );
+
+        }
+
+
+
+
+
+        if(conta.isAnalitica()
+                &&
+           !conta.isAceitaLancamento()) {
+
+
+
+            throw new RuntimeException(
+
+                    "Conta analítica deve aceitar lançamento"
+
+            );
+
+        }
+
+
+
+
+        if(conta.isSintetica()
+                &&
+           conta.isAceitaLancamento()) {
+
+
+
+            throw new RuntimeException(
+
+                    "Conta sintética não pode aceitar lançamento"
 
             );
 
@@ -416,48 +745,15 @@ public class PlanoContaService {
 
 
 
+
     /**
-     * Imprime árvore completa do plano de contas
+     * Imprime árvore completa
      */
     public void imprimirArvore() {
 
 
-
         List<PlanoConta> raizes =
-
-
-                repository.listar()
-
-                .stream()
-
-                .filter(
-
-                        conta ->
-
-                        conta.getContaPai() == null
-
-                )
-
-                .sorted(
-
-                        Comparator.comparing(
-
-                                PlanoConta::getCodigo,
-
-                                Comparator.nullsLast(
-
-                                        String::compareToIgnoreCase
-
-                                )
-
-                        )
-
-                )
-
-                .toList();
-
-
-
+                listarRaizes();
 
 
 
@@ -466,9 +762,7 @@ public class PlanoContaService {
 
 
             System.out.println(
-
                     "Nenhuma conta cadastrada"
-
             );
 
 
@@ -481,23 +775,19 @@ public class PlanoContaService {
 
 
 
-
         System.out.println(
                 "================================="
         );
 
 
         System.out.println(
-                "      PLANO DE CONTAS"
+                "          PLANO DE CONTAS"
         );
 
 
         System.out.println(
                 "================================="
         );
-
-
-
 
 
 
@@ -509,6 +799,7 @@ public class PlanoContaService {
                 conta.imprimir("")
 
         );
+
 
     }
 

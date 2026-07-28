@@ -32,6 +32,13 @@ public class ItemLancamento extends Entidade<Integer> {
 
 
 
+    /**
+     * Lançamento contábil ao qual pertence
+     */
+    private LancamentoContabil lancamento;
+
+
+
 
 
 
@@ -39,6 +46,7 @@ public class ItemLancamento extends Entidade<Integer> {
     public ItemLancamento() {
 
     }
+
 
 
 
@@ -59,9 +67,10 @@ public class ItemLancamento extends Entidade<Integer> {
         this.conta = conta;
         this.centroCusto = centroCusto;
         this.movimento = movimento;
-        this.valor = valor;
+        setValor(valor);
 
     }
+
 
 
 
@@ -77,7 +86,7 @@ public class ItemLancamento extends Entidade<Integer> {
 
         this.conta = conta;
         this.movimento = movimento;
-        this.valor = valor;
+        setValor(valor);
 
     }
 
@@ -95,11 +104,13 @@ public class ItemLancamento extends Entidade<Integer> {
 
 
 
-    public void setConta(PlanoConta conta) {
+    public void setConta(
+            PlanoConta conta) {
 
         this.conta = conta;
 
     }
+
 
 
 
@@ -128,6 +139,7 @@ public class ItemLancamento extends Entidade<Integer> {
 
 
 
+
     public TipoMovimento getMovimento() {
 
         return movimento;
@@ -149,6 +161,7 @@ public class ItemLancamento extends Entidade<Integer> {
 
 
 
+
     public BigDecimal getValor() {
 
         return valor;
@@ -157,11 +170,40 @@ public class ItemLancamento extends Entidade<Integer> {
 
 
 
-    public void setValor(BigDecimal valor) {
+    public void setValor(
+            BigDecimal valor) {
 
-        this.valor = valor;
+
+        this.valor = valor == null
+
+                ? BigDecimal.ZERO
+
+                : valor;
 
     }
+
+
+
+
+
+
+
+
+    public LancamentoContabil getLancamento() {
+
+        return lancamento;
+
+    }
+
+
+
+    public void setLancamento(
+            LancamentoContabil lancamento) {
+
+        this.lancamento = lancamento;
+
+    }
+
 
 
 
@@ -182,6 +224,7 @@ public class ItemLancamento extends Entidade<Integer> {
 
 
 
+
     public boolean isCredito() {
 
 
@@ -195,19 +238,18 @@ public class ItemLancamento extends Entidade<Integer> {
 
 
 
+
     public BigDecimal valorAbsoluto() {
 
 
-        if(valor == null) {
+        return valor == null
 
-            return BigDecimal.ZERO;
+                ? BigDecimal.ZERO
 
-        }
-
-
-        return valor.abs();
+                : valor.abs();
 
     }
+
 
 
 
@@ -236,17 +278,70 @@ public class ItemLancamento extends Entidade<Integer> {
 
 
 
+
+    public void validar() {
+
+
+        if(conta == null) {
+
+            throw new IllegalArgumentException(
+                    "Conta obrigatória"
+            );
+
+        }
+
+
+
+        if(movimento == null) {
+
+            throw new IllegalArgumentException(
+                    "Tipo de movimento obrigatório"
+            );
+
+        }
+
+
+
+        if(valor == null
+
+                || valor.compareTo(
+                        BigDecimal.ZERO
+                ) <= 0) {
+
+
+            throw new IllegalArgumentException(
+                    "Valor deve ser maior que zero"
+            );
+
+        }
+
+    }
+
+
+
+
+
+
+
+
     @Override
     public String toString() {
 
 
         return movimento
+
                 + " | "
-                + conta
+
+                + (conta != null
+                    ? conta.toString()
+                    : "Sem conta")
+
                 + " | R$ "
+
                 + valor;
 
     }
+
 
 
 
@@ -280,6 +375,7 @@ public class ItemLancamento extends Entidade<Integer> {
         );
 
     }
+
 
 
 

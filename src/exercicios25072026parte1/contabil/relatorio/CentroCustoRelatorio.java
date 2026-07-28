@@ -3,14 +3,14 @@ package exercicios25072026parte1.contabil.relatorio;
 
 import java.math.BigDecimal;
 
-import exercicios25072026parte1.contabil.model.PlanoConta;
+import exercicios25072026parte1.contabil.model.CentroCusto;
 
 
 
-public class BalanceteRelatorio {
+public class CentroCustoRelatorio {
 
 
-    private final PlanoConta conta;
+    private final CentroCusto centroCusto;
 
 
     private final BigDecimal totalDebito;
@@ -23,14 +23,19 @@ public class BalanceteRelatorio {
 
 
 
-    public BalanceteRelatorio(
-            PlanoConta conta,
+    public CentroCustoRelatorio(
+
+            CentroCusto centroCusto,
+
             BigDecimal totalDebito,
+
             BigDecimal totalCredito,
-            BigDecimal saldo) {
 
+            BigDecimal saldo
 
-        this.conta = conta;
+    ) {
+
+        this.centroCusto = centroCusto;
         this.totalDebito = totalDebito;
         this.totalCredito = totalCredito;
         this.saldo = saldo;
@@ -39,11 +44,16 @@ public class BalanceteRelatorio {
 
 
 
-    public PlanoConta getConta() {
 
-        return conta;
+
+    public CentroCusto getCentroCusto() {
+
+        return centroCusto;
 
     }
+
+
+
 
 
     public BigDecimal getTotalDebito() {
@@ -53,11 +63,17 @@ public class BalanceteRelatorio {
     }
 
 
+
+
+
     public BigDecimal getTotalCredito() {
 
         return totalCredito;
 
     }
+
+
+
 
 
     public BigDecimal getSaldo() {
@@ -69,17 +85,17 @@ public class BalanceteRelatorio {
 
 
 
+
+
     @Override
     public String toString() {
 
 
         return String.format(
 
-                "%-30s D:%12s C:%12s S:%12s",
+                "%s | Débito: R$ %s | Crédito: R$ %s | Saldo: R$ %s",
 
-                conta.getCodigo()
-                        + " - "
-                        + conta.getDescricao(),
+                centroCusto.getDescricao(),
 
                 totalDebito,
 
@@ -90,5 +106,6 @@ public class BalanceteRelatorio {
         );
 
     }
+
 
 }

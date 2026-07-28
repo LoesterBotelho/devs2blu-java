@@ -1,312 +1,529 @@
 package exercicios25072026parte1.contabil.service;
 
+
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import exercicios25072026parte1.contabil.enums.StatusLancamento;
 import exercicios25072026parte1.contabil.model.ItemLancamento;
 import exercicios25072026parte1.contabil.model.LancamentoContabil;
 import exercicios25072026parte1.contabil.model.PlanoConta;
 import exercicios25072026parte1.contabil.repository.LancamentoRepository;
 import exercicios25072026parte1.contabil.repository.PlanoContaRepository;
 
+
+
 public class LancamentoContabilService {
+
 
     private final LancamentoRepository repository;
 
+
     private final PlanoContaRepository planoContaRepository;
+
+
+
 
     public LancamentoContabilService(
             LancamentoRepository repository,
             PlanoContaRepository planoContaRepository) {
 
+
         this.repository = repository;
-        this.planoContaRepository = planoContaRepository;
+
+        this.planoContaRepository =
+                planoContaRepository;
 
     }
 
+
+
+
+
+
+
+    /**
+     * Salva lançamento em rascunho.
+     */
     public void salvar(
             LancamentoContabil lancamento) {
 
-        validar(lancamento);
 
-        atualizarSaldo(lancamento);
+        if(lancamento == null) {
+
+            throw new IllegalArgumentException(
+                    "Lançamento obrigatório"
+            );
+
+        }
+
+
+        if(lancamento.getStatus() == null) {
+
+            lancamento.setStatus(
+                    StatusLancamento.RASCUNHO
+            );
+
+        }
+
 
         repository.salvar(lancamento);
 
     }
 
+
+
+
+
+
+
+
+    /**
+     * Valida partida dobrada.
+     */
+    public void validar(
+            Integer id) {
+
+
+        LancamentoContabil lancamento =
+                buscarObrigatorio(id);
+
+
+
+        validarContas(lancamento);
+
+
+
+        lancamento.validarLancamento();
+
+
+
+        repository.salvar(lancamento);
+
+    }
+
+
+
+
+
+
+
+
+    /**
+     * Posta na contabilidade.
+     */
+    public void postar(
+            Integer id) {
+
+
+        LancamentoContabil lancamento =
+                buscarObrigatorio(id);
+
+
+
+        if(lancamento.getStatus()
+                != StatusLancamento.VALIDADO) {
+
+
+            throw new IllegalStateException(
+
+                    "Somente lançamento validado pode ser postado"
+
+            );
+
+        }
+
+
+
+
+        atualizarSaldo(lancamento);
+
+
+
+        lancamento.postar();
+
+
+
+        repository.salvar(lancamento);
+
+    }
+
+
+
+
+
+
+
+
+    /**
+     * Cancela lançamento postado.
+     */
+    public void cancelar(
+            Integer id,
+            String motivo) {
+
+
+        LancamentoContabil lancamento =
+                buscarObrigatorio(id);
+
+
+
+
+        reverterSaldo(lancamento);
+
+
+
+        lancamento.cancelar(
+                motivo
+        );
+
+
+
+        repository.salvar(lancamento);
+
+    }
+
+
+
+
+
+
+
+
     public Optional<LancamentoContabil> buscar(
             Integer id) {
+
 
         return repository.buscar(id);
 
     }
 
+
+
+
+
+
+
+
+    private LancamentoContabil buscarObrigatorio(
+            Integer id) {
+
+
+        return repository.buscar(id)
+
+                .orElseThrow(
+
+                        () -> new RuntimeException(
+
+                                "Lançamento não encontrado: "
+                                        + id
+
+                        )
+
+                );
+
+    }
+
+
+
+
+
+
+
+
     public List<LancamentoContabil> listar() {
+
 
         return repository.listarOrdenado(
 
                 Comparator.comparing(
+
                         LancamentoContabil::getData
+
                 )
 
         );
 
     }
 
-    public List<LancamentoContabil> listarPeriodo(
-            LocalDate inicio,
-            LocalDate fim) {
+
+
+
+
+
+
+
+    public List<LancamentoContabil> listarPostados() {
+
 
         return repository.listar()
 
                 .stream()
 
-                .filter(lancamento ->
+                .filter(
 
-                        !lancamento.getData().isBefore(inicio)
+                        l -> l.getStatus()
+                                ==
+                                StatusLancamento.POSTADO
 
-                        &&
-
-                        !lancamento.getData().isAfter(fim))
+                )
 
                 .toList();
 
     }
 
+
+
+
+
+
+
+
     public BigDecimal totalDebitos() {
 
-        return repository.listar()
+
+        return listarPostados()
 
                 .stream()
 
-                .map(LancamentoContabil::totalDebito)
+                .map(
+                        LancamentoContabil::totalDebito
+                )
 
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .reduce(
+
+                        BigDecimal.ZERO,
+
+                        BigDecimal::add
+
+                );
 
     }
+
+
+
+
+
+
+
 
     public BigDecimal totalCreditos() {
 
-        return repository.listar()
+
+        return listarPostados()
 
                 .stream()
 
-                .map(LancamentoContabil::totalCredito)
+                .map(
+                        LancamentoContabil::totalCredito
+                )
 
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .reduce(
 
-    }
+                        BigDecimal.ZERO,
 
-    public void remover(
-            Integer id) {
+                        BigDecimal::add
 
-        LancamentoContabil lancamento =
-
-                repository.buscar(id)
-
-                        .orElseThrow(() ->
-
-                                new RuntimeException(
-                                        "Lançamento não encontrado"
-                                ));
-
-        reverterSaldo(lancamento);
-
-        repository.removerPorId(id);
-
-    }
-
-    private void validar(
-            LancamentoContabil lancamento) {
-
-        if (lancamento == null) {
-
-            throw new RuntimeException(
-                    "Lançamento obrigatório"
-            );
-
-        }
-
-        if (lancamento.getData() == null) {
-
-            throw new RuntimeException(
-                    "Data obrigatória"
-            );
-
-        }
-
-        if (lancamento.getItens() == null
-                || lancamento.getItens().isEmpty()) {
-
-            throw new RuntimeException(
-                    "Lançamento sem itens"
-            );
-
-        }
-
-        validarItens(lancamento);
-
-        if (!lancamento.partidaDobradaValida()) {
-
-            throw new RuntimeException(
-                    "Débito deve ser igual ao crédito"
-            );
-
-        }
-
-    }
-
-    private void validarItens(
-            LancamentoContabil lancamento) {
-
-        boolean possuiDebito = false;
-        boolean possuiCredito = false;
-
-        for (ItemLancamento item : lancamento.getItens()) {
-
-            if (item == null) {
-
-                throw new RuntimeException(
-                        "Item inválido"
                 );
 
-            }
+    }
 
-            PlanoConta conta = item.getConta();
 
-            if (conta == null) {
 
-                throw new RuntimeException(
-                        "Conta obrigatória"
-                );
 
-            }
 
-            PlanoConta contaRepositorio =
+
+
+
+
+    private void validarContas(
+            LancamentoContabil lancamento) {
+
+
+        lancamento.validar();
+
+
+
+        for(ItemLancamento item :
+                lancamento.getItens()) {
+
+
+            PlanoConta conta =
 
                     planoContaRepository
 
-                            .buscar(conta.getId())
+                            .buscar(
+                                    item.getConta().getId()
+                            )
 
-                            .orElseThrow(() ->
+                            .orElseThrow(
 
-                                    new RuntimeException(
+                                    () -> new RuntimeException(
 
-                                            "Conta inexistente: "
-                                                    + conta.getCodigo()
+                                            "Conta não encontrada"
 
-                                    ));
+                                    )
 
-            if (!contaRepositorio.isAnalitica()) {
+                            );
 
-                throw new RuntimeException(
 
-                        "Somente contas analíticas recebem lançamento: "
-                                + contaRepositorio.getCodigo()
+
+            if(!conta.isAnalitica()) {
+
+
+                throw new IllegalStateException(
+
+                        "Conta sintética não aceita lançamento: "
+                                + conta.getCodigo()
 
                 );
 
             }
 
-            if (item.getValor() == null
-                    || item.getValor().compareTo(BigDecimal.ZERO) <= 0) {
-
-                throw new RuntimeException(
-                        "Valor inválido"
-                );
-
-            }
-
-            if (item.isDebito()) {
-                possuiDebito = true;
-            }
-
-            if (item.isCredito()) {
-                possuiCredito = true;
-            }
-
         }
 
-        if (!possuiDebito) {
-
-            throw new RuntimeException(
-                    "Não existe débito"
-            );
-
-        }
-
-        if (!possuiCredito) {
-
-            throw new RuntimeException(
-                    "Não existe crédito"
-            );
-
-        }
 
     }
+
+
+
+
+
+
+
 
     private void atualizarSaldo(
             LancamentoContabil lancamento) {
 
-        for (ItemLancamento item : lancamento.getItens()) {
+
+
+        for(ItemLancamento item :
+                lancamento.getItens()) {
+
 
             PlanoConta conta =
 
                     planoContaRepository
 
-                            .buscar(item.getConta().getId())
+                            .buscar(
+                                    item.getConta().getId()
+                            )
 
                             .orElseThrow();
 
-            BigDecimal saldo = conta.getSaldo();
 
-            if (item.isDebito()) {
+
+            BigDecimal saldo =
+
+                    conta.getSaldo() == null
+
+                            ?
+
+                            BigDecimal.ZERO
+
+                            :
+
+                            conta.getSaldo();
+
+
+
+
+            if(item.isDebito()) {
+
 
                 conta.setSaldo(
-                        saldo.add(item.getValor())
+
+                        saldo.add(
+                                item.getValor()
+                        )
+
                 );
+
 
             } else {
 
+
                 conta.setSaldo(
-                        saldo.subtract(item.getValor())
+
+                        saldo.subtract(
+                                item.getValor()
+                        )
+
                 );
 
             }
 
+
         }
 
     }
+
+
+
+
+
+
+
 
     private void reverterSaldo(
             LancamentoContabil lancamento) {
 
-        for (ItemLancamento item : lancamento.getItens()) {
+
+
+        for(ItemLancamento item :
+                lancamento.getItens()) {
+
 
             PlanoConta conta =
 
                     planoContaRepository
 
-                            .buscar(item.getConta().getId())
+                            .buscar(
+                                    item.getConta().getId()
+                            )
 
                             .orElseThrow();
 
-            BigDecimal saldo = conta.getSaldo();
 
-            if (item.isDebito()) {
+
+            BigDecimal saldo =
+
+                    conta.getSaldo() == null
+
+                            ?
+
+                            BigDecimal.ZERO
+
+                            :
+
+                            conta.getSaldo();
+
+
+
+
+            if(item.isDebito()) {
+
 
                 conta.setSaldo(
-                        saldo.subtract(item.getValor())
+
+                        saldo.subtract(
+                                item.getValor()
+                        )
+
                 );
+
 
             } else {
 
+
                 conta.setSaldo(
-                        saldo.add(item.getValor())
+
+                        saldo.add(
+                                item.getValor()
+                        )
+
                 );
 
             }
@@ -314,5 +531,6 @@ public class LancamentoContabilService {
         }
 
     }
+
 
 }

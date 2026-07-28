@@ -1,77 +1,132 @@
 package exercicios25072026parte1.contabil.relatorio;
 
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import exercicios25072026parte1.contabil.enums.TipoMovimento;
 
+
 public class LivroRazaoRelatorio {
 
-	private LocalDate data;
 
-	private String conta;
+    private final LocalDate data;
 
-	private String historico;
+    private final String documento;
 
-	private TipoMovimento movimento;
+    private final String historico;
 
-	private BigDecimal valor;
+    private final TipoMovimento movimento;
 
-	private BigDecimal saldo;
+    private final BigDecimal debito;
 
-	public LivroRazaoRelatorio(LocalDate data, String conta, String historico, TipoMovimento movimento,
-			BigDecimal valor, BigDecimal saldo) {
+    private final BigDecimal credito;
 
-		this.data = data;
-		this.conta = conta;
-		this.historico = historico;
-		this.movimento = movimento;
-		this.valor = valor;
-		this.saldo = saldo;
+    private final BigDecimal saldo;
 
-	}
 
-	public LocalDate getData() {
 
-		return data;
 
-	}
+    public LivroRazaoRelatorio(
 
-	public String getConta() {
+            LocalDate data,
 
-		return conta;
+            String documento,
 
-	}
+            String historico,
 
-	public String getHistorico() {
+            TipoMovimento movimento,
 
-		return historico;
+            BigDecimal debito,
 
-	}
+            BigDecimal credito,
 
-	public TipoMovimento getMovimento() {
+            BigDecimal saldo
 
-		return movimento;
+    ) {
 
-	}
+        this.data = data;
+        this.documento = documento;
+        this.historico = historico;
+        this.movimento = movimento;
+        this.debito = debito;
+        this.credito = credito;
+        this.saldo = saldo;
 
-	public BigDecimal getValor() {
+    }
 
-		return valor;
 
-	}
 
-	public BigDecimal getSaldo() {
 
-		return saldo;
 
-	}
+    public LocalDate getData() {
+        return data;
+    }
 
-	@Override
-	public String toString() {
 
-		return String.format("%s | %-25s | %-8s | R$ %10s | Saldo: R$ %10s", data, historico, movimento, valor, saldo);
 
-	}
+    public String getDocumento() {
+        return documento;
+    }
+
+
+
+    public String getHistorico() {
+        return historico;
+    }
+
+
+
+    public TipoMovimento getMovimento() {
+        return movimento;
+    }
+
+
+
+    public BigDecimal getDebito() {
+        return debito;
+    }
+
+
+
+    public BigDecimal getCredito() {
+        return credito;
+    }
+
+
+
+    public BigDecimal getSaldo() {
+        return saldo;
+    }
+
+
+
+
+
+
+    @Override
+    public String toString() {
+
+
+        return String.format(
+
+                "%s | %-10s | %-25s | D: %10s | C: %10s | Saldo: %10s",
+
+                data,
+
+                documento,
+
+                historico,
+
+                debito,
+
+                credito,
+
+                saldo
+
+        );
+
+    }
+
 
 }

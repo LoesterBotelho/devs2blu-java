@@ -77,7 +77,7 @@ public class ContabilContext {
                 new LivroRazaoService(lancamentoService);
 
         this.balanceteService =
-                new BalanceteService(planoContaService);
+                new BalanceteService(lancamentoService);
 
         /*
          * Carga inicial

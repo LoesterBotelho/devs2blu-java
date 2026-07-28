@@ -6,11 +6,13 @@ import java.time.LocalDate;
 
 
 import exercicios25072026parte1.contabil.config.ContabilContext;
+import exercicios25072026parte1.contabil.enums.TipoMovimento;
+import exercicios25072026parte1.contabil.model.CentroCusto;
 import exercicios25072026parte1.contabil.model.ItemLancamento;
 import exercicios25072026parte1.contabil.model.LancamentoContabil;
 import exercicios25072026parte1.contabil.model.PlanoConta;
-import exercicios25072026parte1.contabil.enums.TipoMovimento;
 import exercicios25072026parte1.contabil.service.BalanceteService;
+import exercicios25072026parte1.contabil.service.CentroCustoAnaliseService;
 import exercicios25072026parte1.contabil.service.LancamentoContabilService;
 import exercicios25072026parte1.contabil.service.LivroDiarioService;
 import exercicios25072026parte1.contabil.service.LivroRazaoService;
@@ -66,6 +68,12 @@ public class FluxoContabilCompletoTest {
 
 
 
+        CentroCustoAnaliseService centroAnalise =
+                context.getCentroCustoAnaliseService();
+
+
+
+
 
 
         /*
@@ -94,6 +102,23 @@ public class FluxoContabilCompletoTest {
 
 
 
+        /*
+         * Buscar centro de custo
+         */
+
+        CentroCusto administrativo =
+
+                context.getCentroCustoService()
+
+                .buscarPorCodigo("10")
+
+                .orElseThrow();
+
+
+
+
+
+
 
         /*
          * Criar lançamento
@@ -101,23 +126,19 @@ public class FluxoContabilCompletoTest {
 
         LancamentoContabil lancamento =
 
-                new LancamentoContabil();
+                new LancamentoContabil(
+
+                        null,
+
+                        LocalDate.now(),
+
+                        "NF001",
+
+                        "Integralização de capital"
+
+                );
 
 
-
-        lancamento.setData(
-                LocalDate.now()
-        );
-
-
-        lancamento.setDocumento(
-                "NF001"
-        );
-
-
-        lancamento.setHistorico(
-                "Integralização de capital"
-        );
 
 
 
@@ -131,13 +152,19 @@ public class FluxoContabilCompletoTest {
 
                 new ItemLancamento(
 
+                        null,
+
                         caixa,
+
+                        administrativo,
 
                         TipoMovimento.DEBITO,
 
                         new BigDecimal("10000.00")
 
                 );
+
+
 
 
 
@@ -151,13 +178,19 @@ public class FluxoContabilCompletoTest {
 
                 new ItemLancamento(
 
+                        null,
+
                         capitalSocial,
+
+                        administrativo,
 
                         TipoMovimento.CREDITO,
 
                         new BigDecimal("10000.00")
 
                 );
+
+
 
 
 
@@ -171,6 +204,7 @@ public class FluxoContabilCompletoTest {
         lancamento.adicionarItem(
                 credito
         );
+
 
 
 
@@ -205,6 +239,7 @@ public class FluxoContabilCompletoTest {
 
 
 
+
         /*
          * Validar
          */
@@ -223,6 +258,8 @@ public class FluxoContabilCompletoTest {
 
 
 
+
+
         /*
          * Postar
          */
@@ -235,6 +272,7 @@ public class FluxoContabilCompletoTest {
         System.out.println(
                 "POSTAGEM: OK"
         );
+
 
 
 
@@ -260,9 +298,11 @@ public class FluxoContabilCompletoTest {
         );
 
 
+
         livroDiario.gerar()
 
                 .forEach(System.out::println);
+
 
 
 
@@ -302,6 +342,7 @@ public class FluxoContabilCompletoTest {
 
 
 
+
         /*
          * Balancete
          */
@@ -325,6 +366,41 @@ public class FluxoContabilCompletoTest {
         balancete.gerar()
 
                 .forEach(System.out::println);
+
+
+
+
+
+
+
+        /*
+         * Centro de custo
+         */
+
+        System.out.println();
+
+        System.out.println(
+                "=============="
+        );
+
+        System.out.println(
+                " ANALISE CENTRO DE CUSTO"
+        );
+
+        System.out.println(
+                "=============="
+        );
+
+
+
+        centroAnalise.gerar()
+
+                .forEach(System.out::println);
+
+
+
+
+
 
 
 
@@ -355,6 +431,5 @@ public class FluxoContabilCompletoTest {
 
 
     }
-
 
 }

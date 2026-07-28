@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import exercicios25072026parte1.contabil.model.CentroCusto;
 
 
-
 public class CentroCustoRelatorio {
 
 
@@ -16,29 +15,15 @@ public class CentroCustoRelatorio {
     private final BigDecimal totalDebito;
 
 
-    private final BigDecimal totalCredito;
-
-
-    private final BigDecimal saldo;
-
-
 
     public CentroCustoRelatorio(
-
             CentroCusto centroCusto,
+            BigDecimal totalDebito) {
 
-            BigDecimal totalDebito,
-
-            BigDecimal totalCredito,
-
-            BigDecimal saldo
-
-    ) {
 
         this.centroCusto = centroCusto;
+
         this.totalDebito = totalDebito;
-        this.totalCredito = totalCredito;
-        this.saldo = saldo;
 
     }
 
@@ -55,7 +40,6 @@ public class CentroCustoRelatorio {
 
 
 
-
     public BigDecimal getTotalDebito() {
 
         return totalDebito;
@@ -66,44 +50,24 @@ public class CentroCustoRelatorio {
 
 
 
-    public BigDecimal getTotalCredito() {
-
-        return totalCredito;
-
-    }
-
-
-
-
-
-    public BigDecimal getSaldo() {
-
-        return saldo;
-
-    }
-
-
-
-
-
-
     @Override
     public String toString() {
 
 
-        return String.format(
+        return
 
-                "%s | Débito: R$ %s | Crédito: R$ %s | Saldo: R$ %s",
+        "Centro Custo: "
 
-                centroCusto.getDescricao(),
+        + centroCusto.getCodigo()
 
-                totalDebito,
+        + " - "
 
-                totalCredito,
+        + centroCusto.getDescricao()
 
-                saldo
+        + " | Total: R$ "
 
-        );
+        + totalDebito;
+
 
     }
 

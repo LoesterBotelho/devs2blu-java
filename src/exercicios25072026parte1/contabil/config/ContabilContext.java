@@ -1,14 +1,18 @@
 package exercicios25072026parte1.contabil.config;
 
+import exercicios25072026parte1.contabil.initializer.CentroCustoInitializer;
+import exercicios25072026parte1.contabil.initializer.ContabilInitializer;
 import exercicios25072026parte1.contabil.repository.CentroCustoRepository;
 import exercicios25072026parte1.contabil.repository.LancamentoRepository;
 import exercicios25072026parte1.contabil.repository.PlanoContaRepository;
 import exercicios25072026parte1.contabil.service.BalanceteService;
+import exercicios25072026parte1.contabil.service.CentroCustoAnaliseService;
 import exercicios25072026parte1.contabil.service.CentroCustoService;
 import exercicios25072026parte1.contabil.service.LancamentoContabilService;
 import exercicios25072026parte1.contabil.service.LivroDiarioService;
 import exercicios25072026parte1.contabil.service.LivroRazaoService;
 import exercicios25072026parte1.contabil.service.PlanoContaService;
+import exercicios25072026parte1.contabil.initializer.LancamentoDataInitializer;
 
 public class ContabilContext {
 
@@ -36,12 +40,15 @@ public class ContabilContext {
 
     private final CentroCustoService centroCustoService;
 
+    private final CentroCustoAnaliseService centroCustoAnaliseService;
+    
     private final LivroDiarioService livroDiarioService;
 
     private final LivroRazaoService livroRazaoService;
 
     private final BalanceteService balanceteService;
 
+      
     public ContabilContext() {
 
         /*
@@ -70,6 +77,11 @@ public class ContabilContext {
         this.centroCustoService =
                 new CentroCustoService(centroCustoRepository);
 
+        this.centroCustoAnaliseService =
+                new CentroCustoAnaliseService(
+                        lancamentoService
+                );
+        
         this.livroDiarioService =
                 new LivroDiarioService(lancamentoService);
 
@@ -88,6 +100,12 @@ public class ContabilContext {
     }
 
     private void inicializar() {
+        inicializarPlanoContas();
+        inicializarCentroCustos();
+        inicializarLancamentos();        
+    }
+
+    private void inicializarPlanoContas() {
 
         new ContabilInitializer(
                 planoContaService
@@ -95,6 +113,26 @@ public class ContabilContext {
 
     }
 
+    private void inicializarCentroCustos() {
+
+        new CentroCustoInitializer(
+                centroCustoService
+        ).carregar();
+
+    }
+    
+    private void inicializarLancamentos() {
+
+
+        new LancamentoDataInitializer(
+                lancamentoService,
+                planoContaService,
+                centroCustoService
+        ).carregar();
+
+
+    }
+    
     /*
      * ======================================
      * GETTERS
@@ -125,6 +163,12 @@ public class ContabilContext {
         return centroCustoService;
     }
 
+    public CentroCustoAnaliseService getCentroCustoAnaliseService() {
+
+        return centroCustoAnaliseService;
+
+    }
+    
     public LivroDiarioService getLivroDiarioService() {
         return livroDiarioService;
     }

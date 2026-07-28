@@ -7,29 +7,22 @@ import java.util.Objects;
 import exercicios25072026parte1.contabil.enums.TipoMovimento;
 
 
-
 public class ItemLancamento extends Entidade<Integer> {
-
 
 
     private static final long serialVersionUID = 1L;
 
 
-
     private PlanoConta conta;
-
 
 
     private CentroCusto centroCusto;
 
 
-
     private TipoMovimento movimento;
 
 
-
     private BigDecimal valor;
-
 
 
     /**
@@ -41,12 +34,9 @@ public class ItemLancamento extends Entidade<Integer> {
 
 
 
-
-
     public ItemLancamento() {
 
     }
-
 
 
 
@@ -65,8 +55,11 @@ public class ItemLancamento extends Entidade<Integer> {
         setId(id);
 
         this.conta = conta;
+
         this.centroCusto = centroCusto;
+
         this.movimento = movimento;
+
         setValor(valor);
 
     }
@@ -80,12 +73,17 @@ public class ItemLancamento extends Entidade<Integer> {
 
     public ItemLancamento(
             PlanoConta conta,
+            CentroCusto centroCusto,
             TipoMovimento movimento,
             BigDecimal valor) {
 
 
         this.conta = conta;
+
+        this.centroCusto = centroCusto;
+
         this.movimento = movimento;
+
         setValor(valor);
 
     }
@@ -117,7 +115,6 @@ public class ItemLancamento extends Entidade<Integer> {
 
 
 
-
     public CentroCusto getCentroCusto() {
 
         return centroCusto;
@@ -139,7 +136,6 @@ public class ItemLancamento extends Entidade<Integer> {
 
 
 
-
     public TipoMovimento getMovimento() {
 
         return movimento;
@@ -154,7 +150,6 @@ public class ItemLancamento extends Entidade<Integer> {
         this.movimento = movimento;
 
     }
-
 
 
 
@@ -188,7 +183,6 @@ public class ItemLancamento extends Entidade<Integer> {
 
 
 
-
     public LancamentoContabil getLancamento() {
 
         return lancamento;
@@ -210,9 +204,7 @@ public class ItemLancamento extends Entidade<Integer> {
 
 
 
-
     public boolean isDebito() {
-
 
         return movimento == TipoMovimento.DEBITO;
 
@@ -224,9 +216,7 @@ public class ItemLancamento extends Entidade<Integer> {
 
 
 
-
     public boolean isCredito() {
-
 
         return movimento == TipoMovimento.CREDITO;
 
@@ -238,9 +228,19 @@ public class ItemLancamento extends Entidade<Integer> {
 
 
 
+    public boolean possuiCentroCusto() {
+
+        return centroCusto != null;
+
+    }
+
+
+
+
+
+
 
     public BigDecimal valorAbsoluto() {
-
 
         return valor == null
 
@@ -256,11 +256,28 @@ public class ItemLancamento extends Entidade<Integer> {
 
 
 
+    public boolean pertenceAo(
+            PlanoConta conta) {
+
+
+        return this.conta != null
+
+                && this.conta.equals(conta);
+
+    }
+
+
+
+
+
+
 
     public boolean valido() {
 
 
         return conta != null
+
+                && centroCusto != null
 
                 && movimento != null
 
@@ -278,27 +295,45 @@ public class ItemLancamento extends Entidade<Integer> {
 
 
 
-
     public void validar() {
 
 
         if(conta == null) {
 
-            throw new IllegalArgumentException(
-                    "Conta obrigatória"
+
+            throw new IllegalStateException(
+                    "Conta contábil obrigatória"
             );
 
         }
+
+
+
+
+
+        if(centroCusto == null) {
+
+
+            throw new IllegalStateException(
+                    "Centro de custo obrigatório"
+            );
+
+        }
+
+
 
 
 
         if(movimento == null) {
 
-            throw new IllegalArgumentException(
+
+            throw new IllegalStateException(
                     "Tipo de movimento obrigatório"
             );
 
         }
+
+
 
 
 
@@ -309,7 +344,7 @@ public class ItemLancamento extends Entidade<Integer> {
                 ) <= 0) {
 
 
-            throw new IllegalArgumentException(
+            throw new IllegalStateException(
                     "Valor deve ser maior que zero"
             );
 
@@ -323,25 +358,33 @@ public class ItemLancamento extends Entidade<Integer> {
 
 
 
-
     @Override
     public String toString() {
 
 
-        return movimento
+        return """
 
-                + " | "
+                ITEM LANÇAMENTO
+                -------------------------
+                Conta.......: %s
+                Centro Custo: %s
+                Movimento...: %s
+                Valor.......: R$ %s
 
-                + (conta != null
-                    ? conta.toString()
-                    : "Sem conta")
+                """
+                .formatted(
 
-                + " | R$ "
+                        conta,
 
-                + valor;
+                        centroCusto,
+
+                        movimento,
+
+                        valor
+
+                );
 
     }
-
 
 
 
@@ -369,6 +412,16 @@ public class ItemLancamento extends Entidade<Integer> {
 
 
 
+        if(getId() == null
+
+                || outro.getId() == null) {
+
+            return this == outro;
+
+        }
+
+
+
         return Objects.equals(
                 getId(),
                 outro.getId()
@@ -382,14 +435,15 @@ public class ItemLancamento extends Entidade<Integer> {
 
 
 
-
     @Override
     public int hashCode() {
 
 
-        return Objects.hash(
-                getId()
-        );
+        return getId() == null
+
+                ? System.identityHashCode(this)
+
+                : Objects.hash(getId());
 
     }
 

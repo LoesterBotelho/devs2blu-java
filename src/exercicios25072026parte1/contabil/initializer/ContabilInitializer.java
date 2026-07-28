@@ -1,4 +1,4 @@
-package exercicios25072026parte1.contabil.config;
+package exercicios25072026parte1.contabil.initializer;
 
 import exercicios25072026parte1.contabil.enums.NaturezaConta;
 import exercicios25072026parte1.contabil.factory.PlanoContaFactory;

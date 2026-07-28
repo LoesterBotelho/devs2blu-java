@@ -1,28 +1,49 @@
 package exercicios25072026parte1.contabil.test;
 
-import exercicios25072026parte1.contabil.initializer.ContabilDataInitializer;
+
+import exercicios25072026parte1.contabil.initializer.ContabilInitializer;
 import exercicios25072026parte1.contabil.repository.PlanoContaRepository;
+import exercicios25072026parte1.contabil.service.PlanoContaService;
+
+
 
 public class ContabilInitializerTest {
 
-	public static void main(String[] args) {
 
-		PlanoContaRepository repository = new PlanoContaRepository();
+    public static void main(String[] args) {
 
-		ContabilDataInitializer initializer = new ContabilDataInitializer(repository);
 
-		initializer.carregar();
+        PlanoContaRepository repository =
+                new PlanoContaRepository();
 
-		repository.listar()
 
-				.forEach(conta -> {
 
-					conta.imprimir("");
+        PlanoContaService service =
+                new PlanoContaService(repository);
 
-					System.out.println();
 
-				});
 
-	}
+        ContabilInitializer initializer =
+                new ContabilInitializer(service);
+
+
+
+        initializer.carregar();
+
+
+
+        service.listar()
+
+                .forEach(conta -> {
+
+                    conta.imprimir("");
+
+                    System.out.println();
+
+                });
+
+
+    }
+
 
 }

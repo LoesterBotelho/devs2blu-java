@@ -43,10 +43,6 @@ public class LancamentoContabilService {
 
 
 
-
-    /**
-     * Salva lançamento em rascunho.
-     */
     public void salvar(
             LancamentoContabil lancamento) {
 
@@ -80,9 +76,6 @@ public class LancamentoContabilService {
 
 
 
-    /**
-     * Valida partida dobrada.
-     */
     public void validar(
             Integer id) {
 
@@ -111,9 +104,6 @@ public class LancamentoContabilService {
 
 
 
-    /**
-     * Posta na contabilidade.
-     */
     public void postar(
             Integer id) {
 
@@ -128,21 +118,18 @@ public class LancamentoContabilService {
 
 
             throw new IllegalStateException(
-
                     "Somente lançamento validado pode ser postado"
-
             );
 
         }
 
 
 
+        lancamento.postar();
+
+
 
         atualizarSaldo(lancamento);
-
-
-
-        lancamento.postar();
 
 
 
@@ -157,9 +144,6 @@ public class LancamentoContabilService {
 
 
 
-    /**
-     * Cancela lançamento postado.
-     */
     public void cancelar(
             Integer id,
             String motivo) {
@@ -170,14 +154,11 @@ public class LancamentoContabilService {
 
 
 
+        lancamento.cancelar(motivo);
+
+
 
         reverterSaldo(lancamento);
-
-
-
-        lancamento.cancelar(
-                motivo
-        );
 
 
 
@@ -293,11 +274,8 @@ public class LancamentoContabilService {
                 )
 
                 .reduce(
-
                         BigDecimal.ZERO,
-
                         BigDecimal::add
-
                 );
 
     }
@@ -321,11 +299,8 @@ public class LancamentoContabilService {
                 )
 
                 .reduce(
-
                         BigDecimal.ZERO,
-
                         BigDecimal::add
-
                 );
 
     }
@@ -337,12 +312,8 @@ public class LancamentoContabilService {
 
 
 
-
     private void validarContas(
             LancamentoContabil lancamento) {
-
-
-        lancamento.validar();
 
 
 
@@ -361,9 +332,7 @@ public class LancamentoContabilService {
                             .orElseThrow(
 
                                     () -> new RuntimeException(
-
                                             "Conta não encontrada"
-
                                     )
 
                             );
@@ -385,6 +354,8 @@ public class LancamentoContabilService {
         }
 
 
+        lancamento.validar();
+
     }
 
 
@@ -398,35 +369,21 @@ public class LancamentoContabilService {
             LancamentoContabil lancamento) {
 
 
-
         for(ItemLancamento item :
                 lancamento.getItens()) {
 
 
-            PlanoConta conta =
-
-                    planoContaRepository
-
-                            .buscar(
-                                    item.getConta().getId()
-                            )
-
-                            .orElseThrow();
+            PlanoConta conta = buscarConta(item);
 
 
 
-            BigDecimal saldo =
+            BigDecimal saldoAtual =
 
                     conta.getSaldo() == null
 
-                            ?
+                    ? BigDecimal.ZERO
 
-                            BigDecimal.ZERO
-
-                            :
-
-                            conta.getSaldo();
-
+                    : conta.getSaldo();
 
 
 
@@ -434,11 +391,7 @@ public class LancamentoContabilService {
 
 
                 conta.setSaldo(
-
-                        saldo.add(
-                                item.getValor()
-                        )
-
+                        saldoAtual.add(item.getValor())
                 );
 
 
@@ -446,15 +399,10 @@ public class LancamentoContabilService {
 
 
                 conta.setSaldo(
-
-                        saldo.subtract(
-                                item.getValor()
-                        )
-
+                        saldoAtual.subtract(item.getValor())
                 );
 
             }
-
 
         }
 
@@ -471,35 +419,21 @@ public class LancamentoContabilService {
             LancamentoContabil lancamento) {
 
 
-
         for(ItemLancamento item :
                 lancamento.getItens()) {
 
 
-            PlanoConta conta =
-
-                    planoContaRepository
-
-                            .buscar(
-                                    item.getConta().getId()
-                            )
-
-                            .orElseThrow();
+            PlanoConta conta = buscarConta(item);
 
 
 
-            BigDecimal saldo =
+            BigDecimal saldoAtual =
 
                     conta.getSaldo() == null
 
-                            ?
+                    ? BigDecimal.ZERO
 
-                            BigDecimal.ZERO
-
-                            :
-
-                            conta.getSaldo();
-
+                    : conta.getSaldo();
 
 
 
@@ -507,11 +441,7 @@ public class LancamentoContabilService {
 
 
                 conta.setSaldo(
-
-                        saldo.subtract(
-                                item.getValor()
-                        )
-
+                        saldoAtual.subtract(item.getValor())
                 );
 
 
@@ -519,16 +449,39 @@ public class LancamentoContabilService {
 
 
                 conta.setSaldo(
-
-                        saldo.add(
-                                item.getValor()
-                        )
-
+                        saldoAtual.add(item.getValor())
                 );
 
             }
 
         }
+
+    }
+
+
+
+
+
+
+
+
+    private PlanoConta buscarConta(
+            ItemLancamento item) {
+
+
+        return planoContaRepository
+
+                .buscar(
+                        item.getConta().getId()
+                )
+
+                .orElseThrow(
+
+                        () -> new RuntimeException(
+                                "Conta não encontrada"
+                        )
+
+                );
 
     }
 

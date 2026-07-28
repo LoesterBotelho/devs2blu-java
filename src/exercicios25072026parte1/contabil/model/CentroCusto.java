@@ -1,8 +1,9 @@
 package exercicios25072026parte1.contabil.model;
 
 
-import java.util.Objects;
-
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 
 public class CentroCusto extends Entidade<Integer> {
@@ -11,17 +12,17 @@ public class CentroCusto extends Entidade<Integer> {
     private static final long serialVersionUID = 1L;
 
 
-
     private String codigo;
 
 
     private String descricao;
 
 
-    private boolean ativo;
+    private CentroCusto centroPai;
 
 
-
+    private final List<CentroCusto> filhos =
+            new ArrayList<>();
 
 
 
@@ -34,24 +35,17 @@ public class CentroCusto extends Entidade<Integer> {
 
 
 
-
-
     public CentroCusto(
             Integer id,
             String codigo,
             String descricao) {
 
-
         setId(id);
 
         this.codigo = codigo;
         this.descricao = descricao;
-        this.ativo = true;
 
     }
-
-
-
 
 
 
@@ -73,9 +67,6 @@ public class CentroCusto extends Entidade<Integer> {
 
 
 
-
-
-
     public String getDescricao() {
 
         return descricao;
@@ -93,53 +84,50 @@ public class CentroCusto extends Entidade<Integer> {
 
 
 
+    public CentroCusto getCentroPai() {
 
-
-
-    public boolean isAtivo() {
-
-        return ativo;
-
-    }
-
-
-
-    public void setAtivo(boolean ativo) {
-
-        this.ativo = ativo;
+        return centroPai;
 
     }
 
 
 
 
+    public void setCentroPai(CentroCusto centroPai) {
+
+        this.centroPai = centroPai;
+
+    }
 
 
 
-    @Override
-    public boolean equals(Object obj) {
+
+    public List<CentroCusto> getFilhos() {
+
+        return List.copyOf(filhos);
+
+    }
 
 
-        if(this == obj) {
 
-            return true;
+
+
+    public void adicionarFilho(
+            CentroCusto filho) {
+
+
+        if(filho == null) {
+
+            throw new IllegalArgumentException(
+                    "Centro custo obrigatório"
+            );
 
         }
 
 
+        filho.setCentroPai(this);
 
-        if(!(obj instanceof CentroCusto outro)) {
-
-            return false;
-
-        }
-
-
-
-        return Objects.equals(
-                getId(),
-                outro.getId()
-        );
+        filhos.add(filho);
 
     }
 
@@ -147,19 +135,19 @@ public class CentroCusto extends Entidade<Integer> {
 
 
 
+    public void ordenarFilhos() {
 
 
-    @Override
-    public int hashCode() {
+        filhos.sort(
 
+                Comparator.comparing(
+                        CentroCusto::getCodigo
+                )
 
-        return Objects.hash(
-                getId()
         );
 
+
     }
-
-
 
 
 
@@ -168,12 +156,10 @@ public class CentroCusto extends Entidade<Integer> {
     @Override
     public String toString() {
 
-
         return codigo
                 + " - "
                 + descricao;
 
     }
-
 
 }

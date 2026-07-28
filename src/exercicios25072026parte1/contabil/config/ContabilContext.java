@@ -2,9 +2,11 @@ package exercicios25072026parte1.contabil.config;
 
 
 import exercicios25072026parte1.contabil.initializer.ContabilDataInitializer;
+import exercicios25072026parte1.contabil.repository.CentroCustoRepository;
 import exercicios25072026parte1.contabil.repository.LancamentoRepository;
 import exercicios25072026parte1.contabil.repository.PlanoContaRepository;
 import exercicios25072026parte1.contabil.service.BalanceteService;
+import exercicios25072026parte1.contabil.service.CentroCustoService;
 import exercicios25072026parte1.contabil.service.LancamentoContabilService;
 import exercicios25072026parte1.contabil.service.LivroDiarioService;
 import exercicios25072026parte1.contabil.service.LivroRazaoService;
@@ -21,11 +23,18 @@ public class ContabilContext {
     private final LancamentoRepository lancamentoRepository;
 
 
+    private final CentroCustoRepository centroCustoRepository;
+
+
 
     private final PlanoContaService planoContaService;
 
 
     private final LancamentoContabilService lancamentoService;
+
+
+    private final CentroCustoService centroCustoService;
+
 
 
     private final LivroDiarioService livroDiarioService;
@@ -43,14 +52,6 @@ public class ContabilContext {
     public ContabilContext() {
 
 
-
-        /*
-         * ==============================
-         * REPOSITÓRIOS
-         * ==============================
-         */
-
-
         planoContaRepository =
                 new PlanoContaRepository();
 
@@ -61,18 +62,15 @@ public class ContabilContext {
 
 
 
+        centroCustoRepository =
+                new CentroCustoRepository();
 
 
 
-
-        /*
-         * ==============================
-         * SERVIÇOS
-         * ==============================
-         */
 
 
         planoContaService =
+
                 new PlanoContaService(
                         planoContaRepository
                 );
@@ -82,6 +80,7 @@ public class ContabilContext {
 
 
         lancamentoService =
+
                 new LancamentoContabilService(
                         lancamentoRepository
                 );
@@ -90,7 +89,18 @@ public class ContabilContext {
 
 
 
+        centroCustoService =
+
+                new CentroCustoService(
+                        centroCustoRepository
+                );
+
+
+
+
+
         livroDiarioService =
+
                 new LivroDiarioService(
                         lancamentoService
                 );
@@ -100,6 +110,7 @@ public class ContabilContext {
 
 
         livroRazaoService =
+
                 new LivroRazaoService(
                         lancamentoService
                 );
@@ -109,22 +120,13 @@ public class ContabilContext {
 
 
         balanceteService =
+
                 new BalanceteService(
                         planoContaService
                 );
 
 
 
-
-
-
-
-
-        /*
-         * ==============================
-         * CARGA INICIAL
-         * ==============================
-         */
 
 
         carregarDados();
@@ -141,14 +143,11 @@ public class ContabilContext {
     private void carregarDados() {
 
 
-
         ContabilDataInitializer initializer =
-
 
                 new ContabilDataInitializer(
                         planoContaRepository
                 );
-
 
 
         initializer.carregar();
@@ -162,11 +161,10 @@ public class ContabilContext {
 
 
 
+
     public PlanoContaService getPlanoContaService() {
 
-
         return planoContaService;
-
 
     }
 
@@ -177,9 +175,18 @@ public class ContabilContext {
 
     public LancamentoContabilService getLancamentoService() {
 
-
         return lancamentoService;
 
+    }
+
+
+
+
+
+
+    public CentroCustoService getCentroCustoService() {
+
+        return centroCustoService;
 
     }
 
@@ -190,9 +197,7 @@ public class ContabilContext {
 
     public LivroDiarioService getLivroDiarioService() {
 
-
         return livroDiarioService;
-
 
     }
 
@@ -203,9 +208,7 @@ public class ContabilContext {
 
     public LivroRazaoService getLivroRazaoService() {
 
-
         return livroRazaoService;
-
 
     }
 
@@ -216,9 +219,7 @@ public class ContabilContext {
 
     public BalanceteService getBalanceteService() {
 
-
         return balanceteService;
-
 
     }
 
@@ -229,9 +230,7 @@ public class ContabilContext {
 
     public PlanoContaRepository getPlanoContaRepository() {
 
-
         return planoContaRepository;
-
 
     }
 
@@ -242,9 +241,18 @@ public class ContabilContext {
 
     public LancamentoRepository getLancamentoRepository() {
 
-
         return lancamentoRepository;
 
+    }
+
+
+
+
+
+
+    public CentroCustoRepository getCentroCustoRepository() {
+
+        return centroCustoRepository;
 
     }
 

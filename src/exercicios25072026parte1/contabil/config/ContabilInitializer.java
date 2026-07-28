@@ -28,10 +28,15 @@ public class ContabilInitializer {
 
 
 
-
-
     public void carregar() {
 
+
+
+        /*
+         * ==========================
+         * ATIVO
+         * ==========================
+         */
 
 
         PlanoConta ativo = criarConta(
@@ -84,6 +89,13 @@ public class ContabilInitializer {
 
 
 
+        /*
+         * ==========================
+         * PASSIVO
+         * ==========================
+         */
+
+
         PlanoConta passivo = criarConta(
                 5,
                 "2",
@@ -110,6 +122,14 @@ public class ContabilInitializer {
 
 
 
+
+        /*
+         * ==========================
+         * PATRIMÔNIO LÍQUIDO
+         * ==========================
+         */
+
+
         PlanoConta patrimonio = criarConta(
                 7,
                 "3",
@@ -124,17 +144,25 @@ public class ContabilInitializer {
 
         PlanoConta capital = criarConta(
                 8,
-                "3.1",
+                "3.1.01",
                 "Capital Social",
                 NaturezaConta.PATRIMONIO_LIQUIDO,
                 TipoConta.ANALITICA,
-                2,
+                3,
                 true
         );
 
 
 
 
+
+
+
+        /*
+         * ==========================
+         * RECEITAS
+         * ==========================
+         */
 
 
         PlanoConta receita = criarConta(
@@ -162,6 +190,14 @@ public class ContabilInitializer {
 
 
 
+
+
+
+        /*
+         * ==========================
+         * DESPESAS
+         * ==========================
+         */
 
 
         PlanoConta despesa = criarConta(
@@ -192,42 +228,11 @@ public class ContabilInitializer {
 
 
 
-        List<PlanoConta> contas = List.of(
-
-                ativo,
-                ativoCirculante,
-                caixa,
-                banco,
-
-                passivo,
-                fornecedores,
-
-                patrimonio,
-                capital,
-
-                receita,
-                venda,
-
-                despesa,
-                salario
-
-        );
-
-
-
-
-
-        contas.forEach(
-
-                planoContaService::cadastrar
-
-        );
-
-
-
-
-
-
+        /*
+         * ==========================
+         * MONTAGEM DA ÁRVORE
+         * ==========================
+         */
 
 
         ativo.adicionarFilha(
@@ -270,8 +275,46 @@ public class ContabilInitializer {
 
 
 
-    }
 
+
+
+
+        /*
+         * ==========================
+         * CADASTRO
+         * ==========================
+         */
+
+
+        List.of(
+
+                ativo,
+                ativoCirculante,
+                caixa,
+                banco,
+
+                passivo,
+                fornecedores,
+
+                patrimonio,
+                capital,
+
+                receita,
+                venda,
+
+                despesa,
+                salario
+
+        )
+
+        .forEach(
+
+                planoContaService::cadastrar
+
+        );
+
+
+    }
 
 
 
@@ -318,7 +361,9 @@ public class ContabilInitializer {
 
         conta.setNivel(nivel);
 
-        conta.setAceitaLancamento(aceitaLancamento);
+        conta.setAceitaLancamento(
+                aceitaLancamento
+        );
 
         conta.setAtivo(true);
 

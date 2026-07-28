@@ -30,7 +30,6 @@ public class PlanoContaService {
 
 
 
-
     public void cadastrar(
             PlanoConta conta) {
 
@@ -39,6 +38,29 @@ public class PlanoContaService {
 
 
         repository.salvar(conta);
+
+    }
+
+
+
+
+
+
+
+    public void cadastrarTodos(
+            List<PlanoConta> contas) {
+
+
+        if(contas == null || contas.isEmpty()) {
+
+            return;
+
+        }
+
+
+        contas.forEach(
+                this::cadastrar
+        );
 
     }
 
@@ -62,17 +84,50 @@ public class PlanoContaService {
 
 
 
+
+    public Optional<PlanoConta> buscarPorCodigo(
+            String codigo) {
+
+
+        return repository.listar()
+
+                .stream()
+
+                .filter(
+
+                        conta ->
+
+                        conta.getCodigo() != null
+
+                        &&
+
+                        conta.getCodigo()
+                                .equalsIgnoreCase(codigo)
+
+                )
+
+                .findFirst();
+
+    }
+
+
+
+
+
+
+
     public List<PlanoConta> listar() {
 
 
         return repository.listarOrdenado(
+
 
                 Comparator.comparing(
 
                         PlanoConta::getCodigo,
 
                         Comparator.nullsLast(
-                                String::compareTo
+                                String::compareToIgnoreCase
                         )
 
                 )
@@ -109,16 +164,22 @@ public class PlanoContaService {
 
         PlanoConta pai =
 
+
                 repository.buscar(idPai)
 
                 .orElseThrow(
 
+
                         () ->
 
                         new RuntimeException(
+
                                 "Conta pai não encontrada: "
+
                                 + idPai
+
                         )
+
 
                 );
 
@@ -150,6 +211,7 @@ public class PlanoContaService {
 
         repository.salvar(filha);
 
+
     }
 
 
@@ -162,6 +224,7 @@ public class PlanoContaService {
             String codigo) {
 
 
+
         return repository.listar()
 
                 .stream()
@@ -169,12 +232,15 @@ public class PlanoContaService {
                 .map(
 
                         conta ->
-                                conta.localizarRecursivo(codigo)
+
+                        conta.localizarRecursivo(codigo)
 
                 )
 
                 .filter(
+
                         conta -> conta != null
+
                 )
 
                 .findFirst();
@@ -191,18 +257,25 @@ public class PlanoContaService {
             Integer id) {
 
 
+
         PlanoConta conta =
+
 
                 repository.buscar(id)
 
                 .orElseThrow(
 
+
                         () ->
 
                         new RuntimeException(
+
                                 "Conta não encontrada: "
+
                                 + id
+
                         )
+
 
                 );
 
@@ -211,6 +284,7 @@ public class PlanoContaService {
         return conta.calcularSaldoTotal();
 
     }
+
 
 
 
@@ -227,10 +301,13 @@ public class PlanoContaService {
 
 
             throw new RuntimeException(
+
                     "Plano de conta obrigatório"
+
             );
 
         }
+
 
 
 
@@ -238,16 +315,21 @@ public class PlanoContaService {
 
 
         if(conta.getCodigo() == null
+
                 ||
+
            conta.getCodigo().isBlank()) {
 
 
 
             throw new RuntimeException(
+
                     "Código da conta obrigatório"
+
             );
 
         }
+
 
 
 
@@ -255,16 +337,21 @@ public class PlanoContaService {
 
 
         if(conta.getDescricao() == null
+
                 ||
+
            conta.getDescricao().isBlank()) {
 
 
 
             throw new RuntimeException(
+
                     "Descrição obrigatória"
+
             );
 
         }
+
 
 
 
@@ -273,10 +360,17 @@ public class PlanoContaService {
 
         boolean existe =
 
+
                 repository.existe(
+
+
 
                         c ->
 
+
+                        c.getCodigo() != null
+
+                        &&
 
                         c.getCodigo()
                                 .equalsIgnoreCase(
@@ -286,6 +380,8 @@ public class PlanoContaService {
                         &&
 
                         !c.equals(conta)
+
+
 
                 );
 
@@ -298,11 +394,13 @@ public class PlanoContaService {
         if(existe) {
 
 
-
             throw new RuntimeException(
 
+
                     "Código de conta já cadastrado: "
+
                     + conta.getCodigo()
+
 
             );
 
@@ -311,46 +409,66 @@ public class PlanoContaService {
 
     }
 
+
+
+
+
+
+
+
     /**
-     * Imprime a árvore completa do plano de contas
+     * Imprime árvore completa do plano de contas
      */
     public void imprimirArvore() {
 
 
-        List<PlanoConta> contasRaiz =
+
+        List<PlanoConta> raizes =
+
 
                 repository.listar()
 
-                        .stream()
+                .stream()
 
-                        .filter(
+                .filter(
 
-                                conta -> conta.getContaPai() == null
+                        conta ->
 
-                        )
+                        conta.getContaPai() == null
 
-                        .sorted(
+                )
 
-                                Comparator.comparing(
-                                        PlanoConta::getCodigo,
-                                        Comparator.nullsLast(
-                                                String::compareTo
-                                        )
+                .sorted(
+
+                        Comparator.comparing(
+
+                                PlanoConta::getCodigo,
+
+                                Comparator.nullsLast(
+
+                                        String::compareToIgnoreCase
+
                                 )
 
                         )
 
-                        .toList();
+                )
+
+                .toList();
 
 
 
 
 
-        if(contasRaiz.isEmpty()) {
+
+
+        if(raizes.isEmpty()) {
 
 
             System.out.println(
+
                     "Nenhuma conta cadastrada"
+
             );
 
 
@@ -362,15 +480,38 @@ public class PlanoContaService {
 
 
 
-        contasRaiz.forEach(
 
-                conta ->
 
-                        conta.imprimir("")
-
+        System.out.println(
+                "================================="
         );
 
 
+        System.out.println(
+                "      PLANO DE CONTAS"
+        );
+
+
+        System.out.println(
+                "================================="
+        );
+
+
+
+
+
+
+
+        raizes.forEach(
+
+                conta ->
+
+                conta.imprimir("")
+
+        );
+
     }
-    
+
+
+
 }

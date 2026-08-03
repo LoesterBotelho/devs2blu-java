@@ -1,8 +1,5 @@
 package exercicios30072026parte1.exercicio02;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class Main {
 	public static void main(String[] args) {
 
@@ -24,10 +21,38 @@ public class Main {
 		System.out.println("Beatriz " + gramaticaBeatriz.getSerie() + " "+ gramaticaBeatriz.getBimestre());
 
 		System.out.println();
+		System.out.println();		
 
 		for (var i = 0; i < gramaticaBeatriz.getListaExercicios().size() - 1; i++) {
-			System.out.println(gramaticaBeatriz.getListaExercicios());
+			System.out.println(gramaticaBeatriz.getListaExercicios().get(i));
 		}
+		
+		System.out.println();
+		System.out.println();
+		
+		for (var i = 0; i < matematicaBeatriz.getListaExercicios().size() - 1; i++) {
+			System.out.println(matematicaBeatriz.getListaExercicios().get(i));
+		}
+		
+		System.out.println();
+		System.out.println();
+		
+		System.out.println("Sofia " + gramaticaSofia.getSerie() + " "+ gramaticaSofia.getBimestre());
+		
+		System.out.println();
+		System.out.println();
+		
+		for (var i = 0; i < gramaticaSofia.getListaExercicios().size() - 1; i++) {
+			System.out.println(gramaticaSofia.getListaExercicios().get(i));
+		}
+		
+		System.out.println();
+		System.out.println();
+		
+		for (var i = 0; i < matematicaSofia.getListaExercicios().size() - 1; i++) {
+			System.out.println(matematicaSofia.getListaExercicios().get(i));
+		}
+		
 
 	}
 }

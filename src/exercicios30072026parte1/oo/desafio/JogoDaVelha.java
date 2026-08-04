@@ -1,4 +1,6 @@
-package exercicios30072026parte1.desafio.oo;
+package exercicios30072026parte1.oo.desafio;
+
+import exercicios30072026parte1.oo.classes.Console;
 
 public class JogoDaVelha {
 

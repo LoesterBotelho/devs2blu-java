@@ -1,18 +1,16 @@
-package exercicios30072026parte1.exercicio02;
+package exercicios30072026parte1.oo.classes;
 
 import java.util.ArrayList;
 
 public class Materia {
-
 	private Disciplina disciplina;
 	private String nome;
-	private ArrayList<Exercicio> listaExercicios = new ArrayList<>();
+	private ArrayList<Exercicio> listaExercicios;
 	private String serie;
 	private String bimestre;
 
 	public Materia() {
-		listaExercicios = new ArrayList<>();
-
+		this.listaExercicios = new ArrayList<>();
 	}
 
 	public Materia(Disciplina disciplina, String nome, ArrayList<Exercicio> listaExercicios, String serie,
@@ -21,9 +19,7 @@ public class Materia {
 		this.nome = nome;
 		this.serie = serie;
 		this.bimestre = bimestre;
-
 		this.listaExercicios = (listaExercicios != null) ? listaExercicios : new ArrayList<>();
-
 	}
 
 	public Disciplina getDisciplina() {
@@ -68,7 +64,12 @@ public class Materia {
 
 	@Override
 	public String toString() {
-		return "Materia [disciplina=" + disciplina + ", nome=" + nome + "]";
+		return "Materia [disciplina=" + disciplina + 
+				", nome=" + nome + 
+				", listaExercicios=" + listaExercicios +
+				", serie=" + serie + 
+				", bimestre=" + bimestre + 
+				"]";
 	}
 
 }

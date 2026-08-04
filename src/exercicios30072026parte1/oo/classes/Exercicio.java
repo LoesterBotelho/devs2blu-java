@@ -1,11 +1,10 @@
-package exercicios30072026parte1.exercicio02;
+package exercicios30072026parte1.oo.classes;
 
 public class Exercicio {
-
 	private String pergunta;
 	private String resposta;
 
-	Exercicio() {
+	public Exercicio() {
 	}
 
 	public Exercicio(String pergunta, String resposta) {
@@ -31,7 +30,8 @@ public class Exercicio {
 
 	@Override
 	public String toString() {
-		return "Exercicio [pergunta=" + pergunta + ", resposta=" + resposta + "]";
+		return "Exercicio [pergunta=" + pergunta + 
+				", resposta=" + resposta + 
+				"]";
 	}
-
 }

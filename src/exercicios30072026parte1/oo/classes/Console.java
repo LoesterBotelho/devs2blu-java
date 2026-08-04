@@ -1,4 +1,4 @@
-package exercicios30072026parte1.desafio.oo;
+package exercicios30072026parte1.oo.classes;
 
 import java.util.Scanner;
 

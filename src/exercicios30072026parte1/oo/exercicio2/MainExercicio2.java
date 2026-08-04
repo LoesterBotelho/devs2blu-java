@@ -1,21 +1,26 @@
-package exercicios30072026parte1.exercicio02;
+package exercicios30072026parte1.oo.exercicio2;
 
-public class Main {
+import exercicios30072026parte1.oo.classes.Disciplina;
+import exercicios30072026parte1.oo.classes.Materia;
+import exercicios30072026parte1.oo.exercicio2.classes.CadastrarExercicios;
+import exercicios30072026parte1.oo.exercicio2.classes.TesteGerado;
+
+public class MainExercicio2 {
 	public static void main(String[] args) {
 
-		Disciplina portugues = new Disciplina("Português");
-		Disciplina matematica = new Disciplina("Matemática");
+		Disciplina portugues = new Disciplina("DISC01", "Português", 60);
+		Disciplina matematica = new Disciplina("DISC02", "Matemática", 60);
 
 		Materia gramaticaBeatriz = new Materia(portugues, "Gramática",
 				CadastrarExercicios.carregarListaPortugues1Serie(), "1º Serie", "1º Bimestre");
 
-		Materia matematicaBeatriz = new Materia(matematica, "Gramática",
+		Materia matematicaBeatriz = new Materia(matematica, "Matemática",
 				CadastrarExercicios.carregarListaMatematicaAdicao1Serie(), "1º Serie", "1º Bimestre");
 
 		Materia gramaticaSofia = new Materia(portugues, "Gramática", CadastrarExercicios.carregarListaPortugues2Serie(),
 				"2º Serie", "1º Bimestre");
 
-		Materia matematicaSofia = new Materia(matematica, "Gramática",
+		Materia matematicaSofia = new Materia(matematica, "Matemática",
 				CadastrarExercicios.carregarListaMatematicaAdicao1Serie(), "1º Serie", "1º Bimestre");
 
 		System.out.println("Beatriz " + gramaticaBeatriz.getSerie() + " "+ gramaticaBeatriz.getBimestre());
@@ -53,6 +58,22 @@ public class Main {
 			System.out.println(matematicaSofia.getListaExercicios().get(i));
 		}
 		
+		System.out.println();
+		System.out.println();		
 
+        int quantidadeDesejada = 3;
+
+        TesteGerado meuTeste1 = new TesteGerado(portugues, CadastrarExercicios.carregarListaPortugues1Serie(), quantidadeDesejada);
+        meuTeste1.exibirTeste();
+        
+        TesteGerado meuTeste2 = new TesteGerado(matematica, CadastrarExercicios.carregarListaMatematicaAdicao1Serie(), quantidadeDesejada);
+        meuTeste2.exibirTeste();
+        
+        TesteGerado meuTeste3 = new TesteGerado(matematica, CadastrarExercicios.carregarListaMatematicaAdicao1Serie(), quantidadeDesejada);
+        meuTeste3.exibirTeste();
+        
+        TesteGerado meuTeste4 = new TesteGerado(portugues, CadastrarExercicios.carregarListaPortugues1Serie(), quantidadeDesejada);
+        meuTeste4.exibirTeste();        
+        
 	}
 }

@@ -1,0 +1,15 @@
+COLOCAR DENTRO DA PASTA : src\exercicios30072026parte1\oo
+
+NO MEU CASO ELE ESTÁ EM "C:\dev\eclipse-workspace\devs2blu-java\src\exercicios30072026parte1\oo"
+
+OU CRIAR PACOTES : 
+
+exercicios30072026parte1.oo.classes
+exercicios30072026parte1.oo.exercicio1
+exercicios30072026parte1.oo.exercicio2
+exercicios30072026parte1.oo.exercicio2.classes
+exercicios30072026parte1.oo.exercicio3
+exercicios30072026parte1.oo.exercicio3.classes
+exercicios30072026parte1.oo.exercicio5
+exercicios30072026parte1.oo.desafio
+

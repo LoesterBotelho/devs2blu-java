@@ -1,7 +1,9 @@
-package exercicios30072026parte1.exercicio02;
+package exercicios30072026parte1.oo.exercicio2.classes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import exercicios30072026parte1.oo.classes.Exercicio;
 
 public class CadastrarExercicios {
 

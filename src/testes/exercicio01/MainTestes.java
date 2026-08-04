@@ -71,6 +71,7 @@ public class MainTestes {
 	public static void getAuthor() {
 		System.out.println("---------------------------------------------------");
 		System.out.println("Author : Loester Botelho");
-		System.out.println("---------------------------------------------------\n");
+		System.out.println("Class  : UtilFuncoes");
+		System.out.println("---------------------------------------------------");
 	}	
 }

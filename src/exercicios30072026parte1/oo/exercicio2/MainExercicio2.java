@@ -28,40 +28,40 @@ public class MainExercicio2 {
 		System.out.println();
 		System.out.println();		
 
-		for (var i = 0; i < gramaticaBeatriz.getListaExercicios().size() - 1; i++) {
-			System.out.println(gramaticaBeatriz.getListaExercicios().get(i));
-		}
-		
-		System.out.println();
-		System.out.println();
-		
-		for (var i = 0; i < matematicaBeatriz.getListaExercicios().size() - 1; i++) {
-			System.out.println(matematicaBeatriz.getListaExercicios().get(i));
-		}
-		
-		System.out.println();
-		System.out.println();
-		
-		System.out.println("Sofia " + gramaticaSofia.getSerie() + " "+ gramaticaSofia.getBimestre());
-		
-		System.out.println();
-		System.out.println();
-		
-		for (var i = 0; i < gramaticaSofia.getListaExercicios().size() - 1; i++) {
-			System.out.println(gramaticaSofia.getListaExercicios().get(i));
-		}
-		
-		System.out.println();
-		System.out.println();
-		
-		for (var i = 0; i < matematicaSofia.getListaExercicios().size() - 1; i++) {
-			System.out.println(matematicaSofia.getListaExercicios().get(i));
-		}
+//		for (var i = 0; i < gramaticaBeatriz.getListaExercicios().size() - 1; i++) {
+//			System.out.println(gramaticaBeatriz.getListaExercicios().get(i));
+//		}
+//		
+//		System.out.println();
+//		System.out.println();
+//		
+//		for (var i = 0; i < matematicaBeatriz.getListaExercicios().size() - 1; i++) {
+//			System.out.println(matematicaBeatriz.getListaExercicios().get(i));
+//		}
+//		
+//		System.out.println();
+//		System.out.println();
+//		
+//		System.out.println("Sofia " + gramaticaSofia.getSerie() + " "+ gramaticaSofia.getBimestre());
+//		
+//		System.out.println();
+//		System.out.println();
+//		
+//		for (var i = 0; i < gramaticaSofia.getListaExercicios().size() - 1; i++) {
+//			System.out.println(gramaticaSofia.getListaExercicios().get(i));
+//		}
+//		
+//		System.out.println();
+//		System.out.println();
+//		
+//		for (var i = 0; i < matematicaSofia.getListaExercicios().size() - 1; i++) {
+//			System.out.println(matematicaSofia.getListaExercicios().get(i));
+//		}
 		
 		System.out.println();
 		System.out.println();		
 
-        int quantidadeDesejada = 3;
+        int quantidadeDesejada = 5;
 
         TesteGerado meuTeste1 = new TesteGerado(portugues, CadastrarExercicios.carregarListaPortugues1Serie(), quantidadeDesejada);
         meuTeste1.exibirTeste();

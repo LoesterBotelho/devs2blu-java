@@ -17,9 +17,8 @@ public class TesteGerado {
 		this.questoesSelecionadas = new ArrayList<>();
 
 
-		ArrayList<Exercicio> copiaBanco = new ArrayList<>(bancoExercicios);
-		Collections.shuffle(copiaBanco);
-
+		ArrayList<Exercicio> copiaBanco = new ArrayList<>(bancoExercicios);		
+		Collections.shuffle(copiaBanco);		
 		int limite = Math.min(numDesejado, copiaBanco.size());
 		for (int i = 0; i < limite; i++) {
 			this.questoesSelecionadas.add(copiaBanco.get(i));

@@ -6,7 +6,7 @@ public class Main {
 
 		Address address = new Address("Main Street", "Blumenau", "Brazil");
 
-		Company company = new Company(1L, "Tech Company", address);
+		Company company = new Company(1L, "Loester Tech Company", address);
 
 		Manager manager = new Manager(1L, "John Manager", "john@company.com", 15000.0, "M001", "Engineering");
 
@@ -19,7 +19,10 @@ public class Main {
 		Department department = new Department(1L, "Engineering", manager);
 
 		Project project = new Project(1L, "Banking API", customer);
-
+		
+		developer.setName("Alice Senior Developer");
+		developer.setSalary(12000.0);
+		
 		company.addEmployee(manager);
 		company.addEmployee(developer);
 		company.addEmployee(seniorDeveloper);
@@ -130,6 +133,15 @@ public class Main {
 		System.out.println();
 		System.out.println("customer instanceof Person: " + (customer instanceof Person));
 		System.out.println("customer instanceof Customer: " + (customer instanceof Customer));
-
+		
+		System.out.println();
+		System.out.println(developer);
+		System.out.println(seniorDeveloper);
+		System.out.println(manager);
+		System.out.println(customer);
+		System.out.println(department);
+		System.out.println(project);
+		System.out.println(company);
+		
 	}
 }

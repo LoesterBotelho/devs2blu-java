@@ -7,19 +7,24 @@ import java.util.Scanner;
 public class MenuController {
 
 	public static void inicializarDados(List<Cliente> clientes, List<Tema> temas, List<Aluguel> alugueis) {
-		Cliente cliente1 = new Cliente("Loester", "123.456.789-77", "Rua Heinrich Hosang, 605, no bairro Victor Konder, em Blumenau, Santa Catarina");
-		Cliente cliente2 = new Cliente("Heloisa", "222.456.789-77", "Rua São Paulo, número 1147, no bairro Victor Konder");
-		
+		Cliente cliente1 = new Cliente("Loester", "123.456.789-77",
+				"Rua Heinrich Hosang, 605, no bairro Victor Konder, em Blumenau, Santa Catarina");
+		Cliente cliente2 = new Cliente("Heloisa", "222.456.789-77",
+				"Rua São Paulo, número 1147, no bairro Victor Konder");
+
 		clientes.add(cliente1);
 		clientes.add(cliente2);
 
-		temas.add(new Tema("IronMan - Homem de Ferro", 16000.00, "Vermelha / Amarela", new String[] { "Boneco IronMan Tony Stark 2m", "Luzes do Reator Arc" }));
-		temas.add(new Tema("Cinderela Rosa", 7000.00, "Rosa", new String[] { "Castelo da Cinderela", "Bruxa velha oferecendo maçã", "Carruagem de abóbora" }));
+		temas.add(new Tema("IronMan - Homem de Ferro", 16000.00, "Vermelha / Amarela",
+				new String[] { "Boneco IronMan Tony Stark 2m", "Luzes do Reator Arc" }));
+		temas.add(new Tema("Cinderela Rosa", 7000.00, "Rosa",
+				new String[] { "Castelo da Cinderela", "Bruxa velha oferecendo maçã", "Carruagem de abóbora" }));
 
-		Aluguel aluguel1 = new Aluguel("IronMan - Homem de Ferro", "12/08/2026", "19:00", "23:59", 16000.00, "Rua Heinrich Hosang, 605, no bairro Victor Konder, em Blumenau, Santa Catarina");
+		Aluguel aluguel1 = new Aluguel("IronMan - Homem de Ferro", "12/08/2026", "19:00", "23:59", 16000.00,
+				"Rua Heinrich Hosang, 605, no bairro Victor Konder, em Blumenau, Santa Catarina");
 		aluguel1.setCliente(cliente1);
 		cliente1.adicionarAluguel(aluguel1);
-		
+
 		alugueis.add(aluguel1);
 	}
 
@@ -203,11 +208,11 @@ public class MenuController {
 
 		System.out.println("Digite os itens do tema. Digite \"SAIR\" para encerrar a inserção de itens:");
 
-		while (true) {
+		digitarItens: while (true) {
 			String entrada = sc.nextLine();
 
 			if (entrada.equalsIgnoreCase("SAIR")) {
-				break;
+				break digitarItens;
 			}
 
 			listaItens.add(entrada);

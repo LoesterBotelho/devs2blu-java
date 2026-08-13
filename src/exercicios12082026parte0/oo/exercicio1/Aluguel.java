@@ -4,19 +4,24 @@ import java.util.Objects;
 
 public class Aluguel {
 
-	int id;
-	String nomeTema;
-	String dataFesta;
-	String horaInicio;
-	String horaTermino;
-	double valorCobrado;
-	String endereco;
+	// Variável estática compartilhada entre todos os clientes para gerar o ID sequencial
+	private static int contadorId = 1;
+	
+	private int id;
+	private String nomeTema;
+	private String dataFesta;
+	private String horaInicio;
+	private String horaTermino;
+	private double valorCobrado;
+	private String endereco;
+	private Cliente cliente;
 
 	public Aluguel() {
+		this.id = contadorId++; // Atribui o ID atual e incrementa para o próximo
 	}
 
-	public Aluguel(String nomeTema, String dataFesta, String horaInicio, String horaTermino, double valorCobrado,
-			String endereco) {
+	public Aluguel(String nomeTema, String dataFesta, String horaInicio, String horaTermino, double valorCobrado, String endereco) {
+		this();
 		this.nomeTema = nomeTema;
 		this.dataFesta = dataFesta;
 		this.horaInicio = horaInicio;
@@ -31,6 +36,21 @@ public class Aluguel {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public double calcularValorFinal() {
+		if (cliente != null) {
+			return cliente.aplicarDesconto(this.valorCobrado);
+		}
+		return this.valorCobrado;
 	}
 
 	public String getNomeTema() {
@@ -83,9 +103,14 @@ public class Aluguel {
 
 	@Override
 	public String toString() {
-		return "Aluguel [id=" + id + ", nomeTema=" + nomeTema + ", dataFesta=" + dataFesta + ", horaInicio="
-				+ horaInicio + ", horaTermino=" + horaTermino + ", valorCobrado=" + valorCobrado + ", endereco="
-				+ endereco + "]";
+		return "Aluguel [id=" + id 
+				+ ", tema=" + nomeTema 
+				+ ", dataFesta=" + dataFesta 
+				+ ", horaInicio=" + horaInicio 
+				+ ", horaTermino=" + horaTermino 
+				+ ", valorCobrado=" + valorCobrado 
+				+ ", endereco=" + endereco 
+				+ ", cliente=" + (cliente != null ? cliente.getNome() : "Não informado") + "]";
 	}
 
 	@Override
@@ -104,5 +129,4 @@ public class Aluguel {
 		Aluguel other = (Aluguel) obj;
 		return id == other.id;
 	}
-
 }

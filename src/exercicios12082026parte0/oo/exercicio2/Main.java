@@ -1,4 +1,4 @@
-package exercicios12082026parte0.oo.exercicio1;
+package exercicios12082026parte0.oo.exercicio2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +11,11 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		int opcao;
 
-		List<Cliente> clientes = new ArrayList<>();
-		List<Tema> temas = new ArrayList<>();
-		List<Aluguel> alugueis = new ArrayList<>();
+		List<Autor> autores = new ArrayList<>();
+		List<Categoria> categorias = new ArrayList<>();
+		Biblioteca biblioteca = new Biblioteca();
 
-		MenuController.inicializarDados(clientes, temas, alugueis);
+		MenuController.inicializarDados(autores, categorias, biblioteca);
 
 		principal: while (true) {
 			MenuController.exibirMenu();
@@ -36,22 +36,22 @@ public class Main {
 
 			switch (opcao) {
 			case 1:
-				MenuController.cadastrarCliente(sc, clientes);
+				MenuController.cadastrarAutor(sc, autores);
 				break;
 			case 2:
-				MenuController.listarCliente(sc, clientes);
+				MenuController.listarAutores(autores);
 				break;
 			case 3:
-				MenuController.cadastrarAluguel(sc, alugueis, clientes, temas);
+				MenuController.cadastrarCategoria(sc, categorias);
 				break;
 			case 4:
-				MenuController.listarAluguel(sc, alugueis);
+				MenuController.listarCategorias(categorias);
 				break;
 			case 5:
-				MenuController.cadastrarTema(sc, temas);
+				MenuController.cadastrarLivro(sc, biblioteca, autores, categorias);
 				break;
 			case 6:
-				MenuController.listarTema(sc, temas);
+				MenuController.listarAcervo(biblioteca);
 				break;
 			default:
 				System.out.println("Erro: Opção Inválida!");

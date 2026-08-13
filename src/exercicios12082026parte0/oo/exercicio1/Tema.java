@@ -5,38 +5,53 @@ import java.util.Objects;
 
 public class Tema {
 
-	int id;
-	String nome;
-	double valorAluguel;
-	String corToalha;
-	String[] itensTema;
+	// Variável estática compartilhada entre todos os clientes para gerar o ID sequencial
+	private static int contadorId = 1;
+	
+	private int id;
+	private String nome;
+	private double valorAluguel;
+	private String corToalha;
+	private String[] itensTema;
 
 	public Tema() {
+		this.id = contadorId++; // Atribui o ID atual e incrementa para o próximo		
 	}
 
-	public Tema(String Nome, double ValorAluguel, String CorToalha) {
-		nome = Nome;
-		valorAluguel = ValorAluguel;
-		corToalha = CorToalha;
+	public Tema(String nome, double valorAluguel, String corToalha) {
+		this();
+		this.nome = nome;
+		this.valorAluguel = valorAluguel;
+		this.corToalha = corToalha;
 	}
 
 	public Tema(String nome, double valorAluguel, String corToalha, String[] itensTema) {
-		super();
+		this();
 		this.nome = nome;
 		this.valorAluguel = valorAluguel;
 		this.corToalha = corToalha;
 		this.itensTema = itensTema;
 	}
 
-	void exibirTema() {
+	public void exibirTema() {
 		System.out.println("Nome tema: " + nome);
 		System.out.println("Valor tema: " + valorAluguel);
 		System.out.println("Cor toalha: " + corToalha);
 
-		for (String string : itensTema) {
-			System.out.println("Itens do tema: " + string);
+		if (itensTema != null) {
+			for (String string : itensTema) {
+				System.out.println("Itens do tema: " + string);
+			}
 		}
 		System.out.println("Tema cadastrado com sucesso");
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getNome() {
@@ -93,5 +108,4 @@ public class Tema {
 		Tema other = (Tema) obj;
 		return id == other.id;
 	}
-
 }

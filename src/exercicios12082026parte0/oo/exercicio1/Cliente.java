@@ -6,9 +6,12 @@ import java.util.Objects;
 
 public class Cliente {
 
-	private static final double DESCONTO_FIXO_CLIENTE_ANTIGO = 0.1;  // 10/100 = 10%; 
+	private static final double DESCONTO_FIXO_CLIENTE_ANTIGO = 0.1; // 10/100 = 10%;
+
+	// Variável estática compartilhada entre todos os clientes para gerar o ID sequencial
+	private static int contadorId = 1;
 	
-	private Integer idCliente;
+	private Integer id;
 	private String nome;
 	private String cpf;
 	private String endereco;
@@ -17,6 +20,7 @@ public class Cliente {
 	private Boolean jahFezPedidosAntes = false;
 
 	public Cliente() {
+		this.id = contadorId++; // Atribui o ID atual e incrementa para o próximo		
 		this.listaAlugueisPago = new ArrayList<Aluguel>();
 		this.ehClienteNovo = true;
 		this.jahFezPedidosAntes = false;
@@ -70,39 +74,36 @@ public class Cliente {
 	}
 
 	public Integer getIdCliente() {
-		return idCliente;
+		return id;
 	}
 
 	public void setIdCliente(Integer idCliente) {
-		this.idCliente = idCliente;
+		this.id = idCliente;
 	}
 
-	public Boolean getEhClienteNovo() {
-		return ehClienteNovo;
+	public void adicionarAluguel(Aluguel aluguel) {
+		this.listaAlugueisPago.add(aluguel);
+		this.ehClienteNovo = false;
+		this.jahFezPedidosAntes = true;
 	}
 
-	public void setEhClienteNovo(Boolean ehClienteNovo) {
-		this.ehClienteNovo = ehClienteNovo;
-	}
-
-	public Boolean getJahFezPedidosAntes() {
-		return jahFezPedidosAntes;
-	}
-
-	public void setJahFezPedidosAntes(Boolean jahFezPedidosAntes) {
-		this.jahFezPedidosAntes = jahFezPedidosAntes;
+	public double aplicarDesconto(double valorOriginal) {
+		if (this.jahFezPedidosAntes) {
+			return valorOriginal * (1 - DESCONTO_FIXO_CLIENTE_ANTIGO);
+		}
+		return valorOriginal;
 	}
 
 	@Override
 	public String toString() {
-		return "Cliente [idCliente=" + idCliente + ", nome=" + nome + ", cpf=" + cpf + ", endereco=" + endereco
+		return "Cliente [id=" + id + ", nome=" + nome + ", cpf=" + cpf + ", endereco=" + endereco
 				+ ", listaAlugueisPago=" + listaAlugueisPago + ", ehClienteNovo=" + ehClienteNovo
 				+ ", jahFezPedidosAntes=" + jahFezPedidosAntes + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(idCliente);
+		return Objects.hash(id);
 	}
 
 	@Override
@@ -114,7 +115,6 @@ public class Cliente {
 		if (getClass() != obj.getClass())
 			return false;
 		Cliente other = (Cliente) obj;
-		return Objects.equals(idCliente, other.idCliente);
+		return Objects.equals(id, other.id);
 	}
-
 }

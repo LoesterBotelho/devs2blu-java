@@ -2,7 +2,7 @@ package exercicios18082026parte0.oo.exercicio1;
 
 public class Main {
     public static void main(String[] args) {
-        RelatorioSistema relatorio = new RelatorioSistema("Sistema Executando");
+        RelatorioSistema relatorio = new RelatorioSistema("Super Sistema XD");
         relatorio.gerar();
 
         Funcionario f1 = new Gerente("Ana", 5000.0, "admin");

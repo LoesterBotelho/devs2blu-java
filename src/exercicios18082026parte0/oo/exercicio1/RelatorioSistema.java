@@ -14,6 +14,8 @@ public class RelatorioSistema {
     public void gerar() {
         System.out.println("\n---------------------------------------------------------------------------");    	
         System.out.println(titulo);
+        System.out.println("-----------------------------------------------------------------------------");  	
+        System.out.println("Author : Loester Botelho                                                     ");
         System.out.println("---------------------------------------------------------------------------\n");        
     }
 }

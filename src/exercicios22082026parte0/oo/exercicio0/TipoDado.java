@@ -1,0 +1,36 @@
+package exercicios22082026parte0.oo.exercicio0;
+
+public enum TipoDado {
+    BIGINT,
+    INTEGER,
+    VARCHAR,
+    BOOLEAN,
+    DECIMAL,
+    DATE,
+    LOCAL_DATE_TIME,
+    INSTANT
+}
+
+/*
+PostgreSQL
+
+BIGINT     → BIGINT
+INTEGER    → INTEGER
+VARCHAR    → VARCHAR
+BOOLEAN    → BOOLEAN
+DECIMAL    → NUMERIC
+DATE       → DATE
+TIMESTAMP  → TIMESTAMP
+*/
+
+/*
+MySQL
+
+BIGINT     → BIGINT
+INTEGER    → INT
+VARCHAR    → VARCHAR
+BOOLEAN    → BOOLEAN
+DECIMAL    → DECIMAL
+DATE       → DATE
+TIMESTAMP  → TIMESTAMP
+*/

@@ -1,0 +1,9 @@
+C:\dev\eclipse-workspace\devs2blu-java\src\exercicios30082026parte0\oo
+
+packages : 
+
+exercicios30082026parte0.oo.exercicio1
+	TesteException.java
+
+exercicios30082026parte0.oo.exercicio2
+	TesteException2.java

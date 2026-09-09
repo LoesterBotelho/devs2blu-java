@@ -1,0 +1,54 @@
+package exercicios08092026parte0.oo.exercicio3;
+
+import java.util.Objects;
+
+class Animal {
+	private Long id;
+	private String nome;
+
+	public Animal() {
+	}
+
+	public Animal(Long id, String nome) {
+		this.id = id;
+		this.nome = nome;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Animal animal = (Animal) o;
+		return Objects.equals(id, animal.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public String toString() {
+		return "Animal{id=" + id + 
+				", nome='" + nome + 
+				"'}";
+	}
+}

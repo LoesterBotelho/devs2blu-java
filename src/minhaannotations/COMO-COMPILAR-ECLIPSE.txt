@@ -1,0 +1,11 @@
+
+Criar pacote ou pasta : 
+
+PACOTE PACKAGE : 
+minhaannotations.exercicio1
+minhaannotations.exercicio2
+
+Pasta : C:\dev\eclipse-workspace\devs2blu-java\src\minhaannotations
+
+
+

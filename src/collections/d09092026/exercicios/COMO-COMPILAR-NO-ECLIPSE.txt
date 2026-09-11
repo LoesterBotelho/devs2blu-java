@@ -1,0 +1,7 @@
+Criar pacotes : 
+
+collections.d09092026.exercicios.exercicio1
+collections.d09092026.exercicios.exercicio2
+collections.d09092026.exercicios.exercicio3
+
+PASTA : C:\dev\eclipse-workspace\devs2blu-java\src\collections\d09092026\exercicios

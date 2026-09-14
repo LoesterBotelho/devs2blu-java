@@ -3,8 +3,6 @@ package exercicios13092026parte0.oo.exercicio1;
 import java.util.ArrayList;
 import java.util.List;
 
-import exercicios13092026parte0.oo.Catalogo;
-
 public class MainTestes {
 
 	public static final String MSG_PADRAO = "\n------------------------------------------------------------------------------------------";
@@ -13,6 +11,8 @@ public class MainTestes {
     	
         Catalogo<Produto> catalogoProdutos = new Catalogo<>();
 
+        // ------------------------------------------------------------------------------------------
+        
         Produto notebook = new Produto(1L, "Notebook", 4500.00);
         Produto mouse = new Produto(2L, "Mouse", 150.00);
         Produto teclado = new Produto(3L, "Teclado", 300.00);
@@ -23,6 +23,8 @@ public class MainTestes {
         catalogoProdutos.adicionar(teclado);
         catalogoProdutos.adicionar(monitor);
 
+        // ------------------------------------------------------------------------------------------
+        
         System.out.println(MSG_PADRAO);
         System.out.println("TESTE 1: LISTAR PRODUTOS");
 

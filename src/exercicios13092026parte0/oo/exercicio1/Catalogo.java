@@ -1,4 +1,4 @@
-package exercicios13092026parte0.oo;
+package exercicios13092026parte0.oo.exercicio1;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
-
-import exercicios13092026parte0.oo.exercicio1.Precificavel;
 
 public class Catalogo<T extends Precificavel> {
 

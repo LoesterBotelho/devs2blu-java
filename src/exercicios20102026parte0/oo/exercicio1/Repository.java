@@ -1,0 +1,11 @@
+package exercicios20102026parte0.oo.exercicio1;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface Repository<T> {
+    T save(T entity);
+    Optional<T> findById(long id);
+    List<T> findAll();
+    boolean deleteById(long id);
+}
